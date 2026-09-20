@@ -1,0 +1,112 @@
+/* ===========================================================
+   DAMTARO DESIGN SYSTEM
+   Variables v1.0
+   =========================================================== */
+
+:root {
+
+  /* ===========================================================
+     COLORS
+     =========================================================== */
+
+  /* Brand */
+
+  --color-orange: #FF5A00;
+  --color-orange-hover: #FF6B1A;
+  --color-orange-light: #FF8A3D;
+  --color-orange-soft: rgba(255, 90, 0, 0.12);
+
+  /* Background */
+
+  --color-bg: #090909;
+  --color-bg-secondary: #111111;
+  --color-surface: #181818;
+  --color-surface-light: #202020;
+
+  /* Text */
+
+  --color-white: #FFFFFF;
+  --color-gray: #B5B5B5;
+  --color-gray-dark: #777777;
+
+  /* Borders */
+
+  --color-border: #262626;
+
+  /* Status */
+
+  --color-success: #00D26A;
+  --color-warning: #FFC107;
+  --color-error: #FF4D4F;
+
+  /* ===========================================================
+     TYPOGRAPHY
+     =========================================================== */
+
+  --font-title: "Space Grotesk", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+
+  /* Font Sizes */
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 36px;
+  --text-3xl: 52px;
+  --text-4xl: 72px;
+
+  /* Font Weight */
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* ===========================================================
+     SPACING
+     =========================================================== */
+
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 32px;
+  --space-lg: 64px;
+  --space-xl: 96px;
+  --space-2xl: 140px;
+
+  /* ===========================================================
+     BORDER RADIUS
+     =========================================================== */
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 40px;
+  --radius-pill: 999px;
+
+  /* ===========================================================
+     SHADOWS
+     =========================================================== */
+
+  --shadow-card:
+    0px 20px 60px rgba(0, 0, 0, 0.45);
+
+  --shadow-orange:
+    0px 0px 40px rgba(255, 90, 0, 0.20);
+
+  /* ===========================================================
+     TRANSITIONS
+     =========================================================== */
+
+  --transition-fast: .20s ease;
+  --transition-normal: .35s ease;
+  --transition-slow: .60s ease;
+
+  /* ===========================================================
+     CONTAINER
+     =========================================================== */
+
+  --container: 1280px;
+
+}
