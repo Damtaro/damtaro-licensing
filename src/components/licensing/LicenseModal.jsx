@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 
-import licenses from "../../data/licenses";
+import {
+  CREATOR_LICENSE_PRICE,
+  default as licenses,
+} from "../../data/licenses";
 import Button from "../ui/Button";
 
 export default function LicenseModal({
@@ -95,7 +98,7 @@ export default function LicenseModal({
           <div className="grid gap-5 lg:grid-cols-2">
             <LicenseOption
               license={licenses[0]}
-              price="$15"
+              price={`$${CREATOR_LICENSE_PRICE}`}
               subtitle="Starting at"
               payment="One-time payment"
               onSelect={() =>

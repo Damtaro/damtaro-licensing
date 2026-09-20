@@ -1,3 +1,5 @@
+import { CREATOR_LICENSE_PRICE } from "./licenses";
+
 const pricing = [
   {
     id: 1,
@@ -5,7 +7,7 @@ const pricing = [
     icon: "🎧",
     title: "Creator License",
     subtitle: "Starting at",
-    price: "$15",
+    price: `$${CREATOR_LICENSE_PRICE}`,
     description: "Perfect for creators publishing content on YouTube, Twitch, Podcasts and Social Media.",
     features: ["One-time payment", "Lifetime license", "Commercial use", "No attribution required", "Instant delivery", "Personal projects"],
     button: "Get License",

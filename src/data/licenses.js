@@ -1,3 +1,5 @@
+export const CREATOR_LICENSE_PRICE = 17;
+
 const licenses = [
   {
     id: 1,
@@ -7,6 +9,7 @@ const licenses = [
     features: ["YouTube", "TikTok", "Instagram", "Facebook", "Podcasts", "Twitch", "Monetized Content"],
     button: "Get License",
     type: "creator",
+    price: CREATOR_LICENSE_PRICE,
   },
   {
     id: 2,

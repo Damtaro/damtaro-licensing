@@ -1,6 +1,5 @@
 import ORDER_STATUS from "../data/orderStatuses";
-
-const CREATOR_LICENSE_PRICE = 15;
+import { CREATOR_LICENSE_PRICE } from "../data/licenses";
 
 function createOrderId() {
   const timestamp = Date.now().toString(36);

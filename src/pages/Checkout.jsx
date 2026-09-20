@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 
+import { CREATOR_LICENSE_PRICE } from "../data/licenses";
 import { preparePayment } from "../services/payment/paymentOperations";
 
 export default function Checkout({
@@ -44,7 +45,7 @@ export default function Checkout({
       return order.subtotal;
     }
 
-    return creatorItems.length * 15;
+    return creatorItems.length * CREATOR_LICENSE_PRICE;
   }, [creatorItems, order]);
 
   const currencyCode =
@@ -348,7 +349,7 @@ export default function Checkout({
 
                         <p className="mt-1 font-sans text-[11px] text-white/35">
                           {isCreator
-                            ? "$15.00"
+                            ? `$${CREATOR_LICENSE_PRICE.toFixed(2)}`
                             : "Custom"}
                         </p>
 

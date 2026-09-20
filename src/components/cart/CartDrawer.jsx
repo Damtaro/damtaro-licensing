@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { CREATOR_LICENSE_PRICE } from "../../data/licenses";
 
 export default function CartDrawer({
   open,
@@ -70,7 +71,7 @@ export default function CartDrawer({
   }, [items]);
 
   const creatorSubtotal = useMemo(() => {
-    return creatorItems.length * 15;
+    return creatorItems.length * CREATOR_LICENSE_PRICE;
   }, [creatorItems]);
 
   const totalItems = items.length;
@@ -313,7 +314,9 @@ function CartItem({ item, onRemove }) {
   const license = item.license;
 
   const isCreator = license?.type === "creator";
-  const price = isCreator ? "$15.00" : "Custom";
+  const price = isCreator
+    ? `$${CREATOR_LICENSE_PRICE.toFixed(2)}`
+    : "Custom";
 
   return (
     <article className="border border-white/10 bg-white/[0.02] p-4">
