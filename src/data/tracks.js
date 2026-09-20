@@ -4,7 +4,7 @@ import elevationCover from "../assets/covers/elevation.png";
 
 import blindAudio from "../assets/audio/blind.mp3";
 import controlAudio from "../assets/audio/control.mp3";
-import elevationAudio from "../assets/audio/elevation.wav";
+import elevationAudio from "../assets/audio/elevation.mp3";
 
 const tracks = [
 
