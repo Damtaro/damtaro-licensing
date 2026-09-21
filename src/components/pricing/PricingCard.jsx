@@ -2,7 +2,7 @@ import Button from "../ui/Button";
 
 export default function PricingCard({ pricing, onLicense }) {
   return (
-    <article className="group flex h-full flex-col rounded-3xl border border-zinc-800 bg-zinc-950 p-8 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10">
+    <article className="group flex h-full flex-col rounded-3xl border border-zinc-800 bg-zinc-950 p-5 sm:p-8 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10">
       <div className="text-5xl">{pricing.icon}</div>
       <h3 className="mt-6 text-3xl font-bold text-white">{pricing.title}</h3>
       <p className="mt-5 text-sm uppercase tracking-[0.3em] text-orange-500">{pricing.subtitle}</p>

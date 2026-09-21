@@ -84,7 +84,7 @@ export default function CartDrawer({
 
   return (
     <div
-      className={`fixed inset-0 z-[1000] ${
+      className={`fixed inset-0 z-[1000] overflow-hidden ${
         isVisible
           ? "pointer-events-auto"
           : "pointer-events-none"
@@ -113,7 +113,7 @@ export default function CartDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="cart-title"
-        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#0d0d0d] shadow-2xl transition-[transform,opacity] ${
+        className={`cart-panel absolute right-0 top-0 flex h-dvh w-full max-w-md flex-col overflow-y-auto overscroll-contain sm:overflow-hidden border-l border-white/10 bg-[#0d0d0d] shadow-2xl transition-[transform,opacity] ${
           isVisible
             ? "translate-x-0 opacity-100"
             : "translate-x-[105%] opacity-0"
@@ -126,7 +126,7 @@ export default function CartDrawer({
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+        <div className="shrink-0 flex items-center justify-between border-b border-white/10 px-6 py-5">
           <div>
             <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-orange-500">
               Licensing
@@ -144,7 +144,7 @@ export default function CartDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close cart"
-            className="flex h-10 w-10 items-center justify-center border border-white/10 text-xl text-white/50 transition-colors duration-200 hover:border-orange-500 hover:text-orange-400"
+            className="flex h-11 w-11 items-center justify-center border border-white/10 text-xl text-white/50 transition-colors duration-200 hover:border-orange-500 hover:text-orange-400"
           >
             &times;
           </button>
@@ -152,7 +152,7 @@ export default function CartDrawer({
 
         {/* Added Confirmation */}
         <div
-          className={`overflow-hidden transition-[max-height,opacity,transform] ${
+          className={`shrink-0 overflow-hidden transition-[max-height,opacity,transform] ${
             lastAddedItem
               ? "max-h-32 translate-y-0 opacity-100"
               : "max-h-0 -translate-y-2 opacity-0"
@@ -186,7 +186,7 @@ export default function CartDrawer({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="cart-content shrink-0 flex-1 sm:min-h-0 sm:shrink sm:overflow-y-auto">
           {items.length === 0 ? (
             <EmptyCart
               onContinueShopping={onContinueShopping}
@@ -241,7 +241,7 @@ export default function CartDrawer({
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-white/10 bg-[#0d0d0d] px-6 py-6">
+          <div className="border-t border-white/10 shrink-0 bg-[#0d0d0d] px-6 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between">
               <span className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-white/40">
                 Subtotal
@@ -334,7 +334,7 @@ function CartItem({ item, onRemove }) {
         )}
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:gap-3">
             <div>
               <p className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-orange-500">
                 {license?.type === "business"
@@ -342,7 +342,7 @@ function CartItem({ item, onRemove }) {
                   : "Creator License"}
               </p>
 
-              <h3 className="mt-1 truncate font-display text-lg font-medium text-white">
+              <h3 className="mt-1 break-words font-display text-lg font-medium text-white">
                 {track?.title || "Catalog License"}
               </h3>
             </div>
@@ -361,7 +361,7 @@ function CartItem({ item, onRemove }) {
           <button
             type="button"
             onClick={onRemove}
-            className="mt-4 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-white/35 transition-colors duration-200 hover:text-red-400"
+            className="mt-2 min-h-11 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-white/35 transition-colors duration-200 hover:text-red-400"
           >
             Remove
           </button>

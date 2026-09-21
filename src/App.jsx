@@ -278,7 +278,7 @@ function App() {
 
         {/* Music */}
         {activeView === "music" && (
-          <section className="min-h-screen pt-32 pb-24">
+          <section className="min-h-screen pt-24 pb-24 sm:pt-28">
             <SearchSection
               query={query}
               onQueryChange={setQuery}

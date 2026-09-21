@@ -14,7 +14,7 @@ export default function Pricing({ onLicense }) {
             Pricing
           </p>
 
-          <h2 className="mt-4 text-5xl font-black text-white">
+          <h2 className="mt-4 text-3xl sm:text-5xl font-black text-white">
             Simple Licensing.
             <br />
             Transparent Pricing.

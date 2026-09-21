@@ -18,11 +18,11 @@ export default function TrackDetailView({ open, track, onClose, onLicense, suppr
 
   return (
     <div onClick={onClose} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-      <section onClick={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="track-detail-title" className="relative max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-zinc-800 bg-zinc-950 shadow-2xl">
-        <button onClick={onClose} aria-label="Close track detail" className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-zinc-400 transition hover:bg-orange-500 hover:text-white">&times;</button>
+      <section onClick={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="track-detail-title" className="relative max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-zinc-800 bg-zinc-950 shadow-2xl">
+        <button onClick={onClose} aria-label="Close track detail" className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-zinc-900 text-zinc-400 transition hover:bg-orange-500 hover:text-white">&times;</button>
 
-        <div className="grid gap-8 p-6 sm:p-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <img src={track.cover} alt={track.title} className="aspect-square w-full rounded-2xl border border-zinc-800 object-cover" />
+        <div className="grid gap-8 p-4 pt-16 sm:p-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <img src={track.cover} alt={track.title} width={1200} height={1200} decoding="async" className="aspect-square w-full rounded-2xl border border-zinc-800 object-cover" />
 
           <div className="flex min-w-0 flex-col justify-center">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-orange-500">Track detail</p>

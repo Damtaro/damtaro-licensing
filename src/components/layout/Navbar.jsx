@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { createPortal } from "react-dom";
 
 import Container from "../ui/Container";
 import logo from "../../assets/dmlogo.png";
@@ -18,6 +20,24 @@ export default function Navbar({
   onOpenCart = () => {},
   cartItemCount = 0,
 }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const dialog = menuRef.current;
+    const previousOverflow = document.body.style.overflow;
+    dialog.showModal();
+    document.body.style.overflow = "hidden";
+    const wideScreen = window.matchMedia("(min-width: 1280px)");
+    const closeOnResize = () => { if (wideScreen.matches) setIsMenuOpen(false); };
+    wideScreen.addEventListener("change", closeOnResize);
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      wideScreen.removeEventListener("change", closeOnResize);
+    };
+  }, [isMenuOpen]);
+
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
@@ -86,6 +106,7 @@ export default function Navbar({
 
   function handleNavigation(view) {
     setIsCurrencyOpen(false);
+    setIsMenuOpen(false);
     onNavigate(view);
   }
 
@@ -97,7 +118,7 @@ export default function Navbar({
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-transform duration-500 ease-out ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
+        isVisible || isMenuOpen ? "translate-y-0" : "max-xl:translate-y-0 xl:-translate-y-full"
       }`}
     >
       <div
@@ -112,7 +133,7 @@ export default function Navbar({
             className={`relative flex items-center transition-all duration-500 ${
               isScrolled || activeView !== "home"
                 ? "min-h-20 justify-between py-3"
-                : "min-h-40 justify-center py-5"
+                : "min-h-20 justify-between py-3 xl:min-h-40 xl:justify-center xl:py-5"
             }`}
           >
             {/* Logo */}
@@ -123,7 +144,7 @@ export default function Navbar({
               className={`transition-all duration-500 ${
                 isScrolled || activeView !== "home"
                   ? "relative z-10 shrink-0"
-                  : "absolute left-1/2 top-5 -translate-x-1/2"
+                  : "relative shrink-0 xl:absolute xl:left-1/2 xl:top-5 xl:-translate-x-1/2"
               }`}
             >
               <img
@@ -132,14 +153,17 @@ export default function Navbar({
                 className={`w-auto object-contain transition-all duration-500 ${
                   isScrolled || activeView !== "home"
                     ? "h-10"
-                    : "h-20"
+                    : "h-10 xl:h-20"
                 }`}
               />
             </button>
 
+            <button type="button" onClick={() => setIsMenuOpen(true)} aria-label="Open navigation menu" aria-expanded={isMenuOpen} aria-controls="mobile-navigation" className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-[#090909]/80 text-white xl:hidden">
+              <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+            </button>
             {/* Main Navigation */}
             <nav
-              className={`hidden items-center font-sans text-sm font-bold text-white transition-all duration-500 lg:flex ${
+              className={`hidden items-center font-sans text-sm font-bold text-white transition-all duration-500 xl:flex ${
                 isScrolled || activeView !== "home"
                   ? "mx-auto gap-8"
                   : "mt-24 gap-9"
@@ -167,18 +191,6 @@ export default function Navbar({
                 }`}
               >
                 Music
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleNavigation("licensing")}
-                className={`transition-colors duration-200 ${
-                  activeView === "licensing"
-                    ? "text-orange-400"
-                    : "text-white hover:text-orange-400"
-                }`}
-              >
-                Licensing
               </button>
 
               <button
@@ -212,7 +224,7 @@ export default function Navbar({
 
             {/* Utility Controls */}
             <div
-              className={`hidden items-center font-sans text-xs font-bold text-white transition-all duration-500 lg:flex ${
+              className={`hidden items-center font-sans text-xs font-bold text-white transition-all duration-500 xl:flex ${
                 isScrolled || activeView !== "home"
                   ? "relative z-10 shrink-0 gap-4"
                   : "absolute right-0 top-7 z-10 gap-5"
@@ -404,6 +416,29 @@ export default function Navbar({
           </div>
         </Container>
       </div>
+      {isMenuOpen && createPortal(
+        <dialog ref={menuRef} id="mobile-navigation" aria-labelledby="mobile-navigation-title"
+          onCancel={() => setIsMenuOpen(false)}
+          onClick={(event) => { if (event.target === event.currentTarget) setIsMenuOpen(false); }}
+          className="mobile-navigation fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 text-white">
+          <div className="ml-auto flex h-full w-[min(100%,24rem)] flex-col overflow-y-auto overscroll-contain border-l border-white/10 bg-[#111111] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <h2 id="mobile-navigation-title" className="font-display text-xl">DAMTARO</h2>
+              <button type="button" onClick={() => setIsMenuOpen(false)} aria-label="Close navigation menu" className="h-11 w-11 shrink-0 rounded-xl border border-white/20 text-2xl">&times;</button>
+            </div>
+            <nav aria-label="Mobile navigation" className="grid gap-2">
+              {[["home", "Home"], ["music", "Music"], ["how-to-use", "How to Use"], ["contact", "Contact"], ["login", "Account"]].map(([view, label]) => (
+                <button key={view} type="button" onClick={() => handleNavigation(view)} aria-current={activeView === view ? "page" : undefined} className={"min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5 " + (activeView === view ? "bg-orange-500/10 text-orange-400" : "text-white")}>{label}</button>
+              ))}
+              <button type="button" onClick={() => { setIsMenuOpen(false); onOpenCart(); }} className="min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5">Licensing cart ({cartItemCount})</button>
+            </nav>
+            <label htmlFor="mobile-currency" className="mb-3 mt-8 text-sm font-bold text-white/60">Select Currency</label>
+            <select id="mobile-currency" value={selectedCurrency.code} onChange={(event) => handleCurrencySelection(event.target.value)} className="min-h-12 w-full shrink-0 rounded-xl border border-white/20 bg-[#111111] px-3 text-base">
+              {currencies.map((currency) => <option key={currency.code} value={currency.code}>{currency.code} {currency.symbol} — {currency.name}</option>)}
+            </select>
+          </div>
+        </dialog>, document.body
+      )}
     </header>
   );
 }

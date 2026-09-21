@@ -17,6 +17,109 @@ html {
   scroll-behavior: auto;
 }
 
+body { overflow-wrap: anywhere; }
+input, select, textarea { min-width: 0; max-width: 100%; }
+button:focus-visible, a:focus-visible, select:focus-visible,
+input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 3px;
+}
+.mobile-navigation::backdrop { background: rgb(0 0 0 / 75%); }
+.audio-seek {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.audio-seek::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #f97316 var(--seek-fill), #303034 var(--seek-fill));
+}
+.audio-seek::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #f97316 var(--seek-fill), #303034 var(--seek-fill));
+}
+.audio-seek::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  /* Keep the 16px positioning box; transparent edges leave a 12px dot. */
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-top: -6.5px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: #f97316;
+  background-clip: padding-box;
+  transition: background-color 180ms ease-out;
+}
+.audio-seek::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: #f97316;
+  background-clip: padding-box;
+  transition: background-color 180ms ease-out;
+}
+.audio-seek:is(:hover, :focus-visible, :active)::-webkit-slider-thumb {
+  background-color: #fb923c;
+}
+.audio-seek:is(:hover, :focus-visible, :active)::-moz-range-thumb {
+  background-color: #fb923c;
+}
+@media (prefers-reduced-motion: reduce) {
+  .audio-seek::-webkit-slider-thumb { transition: none; }
+  .audio-seek::-moz-range-thumb { transition: none; }
+}
+
+/* Intrinsic-height reveal: no measured or fixed player height. */
+.audio-controls {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 220ms ease-out, opacity 220ms ease-out;
+}
+.audio-controls[data-expanded="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.stream-dialog[open]::backdrop { animation: stream-backdrop-in 200ms ease-out both; }
+.stream-dialog[open] .stream-panel { animation: stream-panel-in 200ms ease-out both; }
+.stream-dialog[data-closing="true"]::backdrop { animation: stream-backdrop-out 200ms ease-out both; }
+.stream-dialog[data-closing="true"] .stream-panel { animation: stream-panel-out 200ms ease-out both; }
+@keyframes stream-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes stream-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes stream-panel-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes stream-panel-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .music-card, .music-card *, .audio-player *,
+  .stream-dialog *, .stream-dialog::backdrop {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (max-height: 600px) {
+  .cart-panel { overflow-y: auto; }
+  .cart-content { flex: 1 0 auto; overflow-y: visible; }
+}
+@media (max-width: 767px) {
+  input:not([type="checkbox"]), select, textarea { font-size: 16px; }
+}
+
 body {
   margin: 0;
   background: #090909;

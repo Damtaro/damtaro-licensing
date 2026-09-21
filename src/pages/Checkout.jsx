@@ -158,7 +158,7 @@ export default function Checkout({
 
         <form
           onSubmit={handleSubmit}
-          className="mt-10 grid items-start gap-8 lg:grid-cols-[1fr_360px]"
+          className="mt-10 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_360px]"
         >
 
           {/* LEFT COLUMN */}
@@ -342,7 +342,7 @@ export default function Checkout({
                             : "Business License"}
                         </p>
 
-                        <h3 className="mt-1 truncate font-display text-base font-medium text-white">
+                        <h3 className="mt-1 break-words font-display text-base font-medium text-white">
                           {item.track?.title ||
                             "Catalog License"}
                         </h3>
@@ -502,7 +502,7 @@ export default function Checkout({
                         event.target.checked
                       )
                     }
-                    className="mt-0.5 h-4 w-4 accent-orange-500"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-orange-500"
                   />
 
                   <span className="font-sans text-[11px] leading-5 text-white/45">

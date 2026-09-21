@@ -48,24 +48,25 @@ export default function LicenseModal({
         onClick={(event) =>
           event.stopPropagation()
         }
-        className="relative max-h-[88vh] w-full max-w-4xl overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 shadow-2xl"
+        role="dialog" aria-modal="true" aria-label="Licensing options"
+        className="relative max-h-[calc(100dvh-2rem)] w-full max-w-4xl overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 shadow-2xl"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close licensing options"
-          className="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-zinc-400 transition hover:bg-orange-500 hover:text-white"
+          className="absolute right-5 top-5 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-zinc-900 text-zinc-400 transition hover:bg-orange-500 hover:text-white"
         >
           &times;
         </button>
 
-        <div className="max-h-[88vh] overflow-y-auto p-6">
+        <div className="max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain p-4 pt-16 sm:p-6">
           {track ? (
-            <div className="mb-6 flex items-center gap-5">
+            <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-5 sm:pr-12">
               <img
                 src={track.cover}
                 alt={track.title}
-                className="h-24 w-24 rounded-2xl border border-zinc-800 object-cover"
+                className="h-24 w-24 shrink-0 rounded-2xl border border-zinc-800 object-cover"
               />
 
               <div>
@@ -73,7 +74,7 @@ export default function LicenseModal({
                   Licensing
                 </p>
 
-                <h2 className="mt-1 text-4xl font-black text-white">
+                <h2 className="mt-1 text-3xl sm:text-4xl font-black text-white">
                   {track.title}
                 </h2>
 
@@ -84,12 +85,12 @@ export default function LicenseModal({
               </div>
             </div>
           ) : (
-            <div className="mb-6">
+            <div className="mb-6 sm:pr-12">
               <p className="text-xs uppercase tracking-[0.35em] text-orange-500">
                 Licensing
               </p>
 
-              <h2 className="mt-1 text-4xl font-black text-white">
+              <h2 className="mt-1 text-3xl sm:text-4xl font-black text-white">
                 Choose Your License
               </h2>
             </div>

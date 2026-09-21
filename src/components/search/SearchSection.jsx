@@ -31,11 +31,10 @@ export default function SearchSection({ query, onQueryChange, filters, onFilters
     });
   }
 
-  return <section className="py-24"><Container><div className="mx-auto max-w-4xl text-center">
+  return <section className="pb-6 sm:pb-8"><Container><div className="mx-auto max-w-4xl text-center">
     <h2 className="text-4xl font-bold text-white">Find Your Sound</h2>
-    <p className="mt-4 text-lg text-zinc-400">Search by title, genre, mood, BPM or duration.</p>
-    <div className="mt-10"><SearchBar value={query} onChange={onQueryChange} /></div>
-    <div className="mt-8 flex flex-wrap justify-center gap-3">
+    <div className="mt-5 sm:mt-6"><SearchBar value={query} onChange={onQueryChange} /></div>
+    <div className="mt-4 flex flex-wrap justify-center gap-3">
       {availableFilters.map((key) => <FilterChip key={key} active={Boolean(filters[key]) || activeFilter === key} onClick={() => setActiveFilter((current) => current === key ? null : key)}>{key === "bpm" ? "BPM" : `${key[0].toUpperCase()}${key.slice(1)}`}</FilterChip>)}
       {unavailableFilters.map((label) => <FilterChip key={label} disabled title={`${label} metadata is not available yet`}>{label}</FilterChip>)}
     </div>
