@@ -1,5 +1,5 @@
 import ORDER_STATUS from "../data/orderStatuses";
-import { CREATOR_LICENSE_PRICE } from "../data/licenses";
+import { CREATOR_LICENSE_PRICE, BUSINESS_LICENSE_PRICE } from "../data/licenses";
 
 function createOrderId() {
   const timestamp = Date.now().toString(36);
@@ -11,12 +11,15 @@ function createOrderId() {
   return `DM-${timestamp}-${random}`;
 }
 
-function getLicensePrice(license) {
+export function getLicensePrice(license) {
   if (license?.type === "creator") {
     return CREATOR_LICENSE_PRICE;
   }
 
-  return null;
+  if (license?.type === "business") {
+    return BUSINESS_LICENSE_PRICE;
+  }
+  throw new Error("Unsupported license type. Only Creator and Business licenses can be purchased.");
 }
 
 function normalizeCustomer(customer = {}) {
@@ -49,7 +52,6 @@ function normalizeItem(item) {
 export function createOrder({
   items = [],
   customer = {},
-  currency = "USD",
 }) {
   const normalizedItems = items.map(normalizeItem);
 
@@ -72,7 +74,8 @@ export function createOrder({
 
     subtotal,
 
-    currency,
+    // Catalog prices are USD; browser currency selection is not conversion.
+    currency: "USD",
 
     paymentProvider: null,
 

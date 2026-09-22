@@ -1,12 +1,16 @@
+import { formatLicensePrice, getDisplayCurrency } from "../utils/licensePriceDisplay";
 import { useMemo, useState } from "react";
+import LegalAcceptance from "../components/licensing/LegalAcceptance";
 
-import { CREATOR_LICENSE_PRICE } from "../data/licenses";
+import { getLicensePrice } from "../services/orderService";
 import { preparePayment } from "../services/payment/paymentOperations";
 
 export default function Checkout({
+  selectedCurrency,
   items = [],
   order = null,
-  selectedCurrency,
+  onContactSales,
+  onReadLegal,
   onBackToCart,
   onContinueShopping,
 }) {
@@ -26,46 +30,22 @@ export default function Checkout({
   const [paymentMessage, setPaymentMessage] =
     useState("");
 
-  const creatorItems = useMemo(() => {
-    return items.filter(
-      (item) =>
-        item.license?.type === "creator"
-    );
-  }, [items]);
-
-  const businessItems = useMemo(() => {
-    return items.filter(
-      (item) =>
-        item.license?.type === "business"
-    );
-  }, [items]);
-
   const subtotal = useMemo(() => {
-    if (order?.subtotal !== undefined) {
-      return order.subtotal;
-    }
+    return items.reduce((total, item) => total + getLicensePrice(item.license), 0);
+  }, [items]);
 
-    return creatorItems.length * CREATOR_LICENSE_PRICE;
-  }, [creatorItems, order]);
+  const hasBusinessItems = items.some((item) => item.license?.type === "business") ||
+    Boolean(order?.items?.some((item) => item.licenseType === "business"));
 
-  const currencyCode =
-    selectedCurrency?.code || "USD";
-
-  const hasBusinessItems =
-    businessItems.length > 0;
-
-  const checkoutReady =
-    Boolean(order) &&
-    creatorItems.length > 0 &&
-    !hasBusinessItems &&
-    name.trim() &&
-    email.trim() &&
-    country.trim() &&
-    projectType.trim() &&
-    termsAccepted;
+  const customerInfoValid = Boolean(
+    name.trim() && email.trim() && country.trim() && projectType.trim() && termsAccepted
+  );
+  // Product eligibility is separate from payment-provider availability.
+  const paymentAvailable = !hasBusinessItems;
+  const checkoutReady = Boolean(order) && items.length > 0 && customerInfoValid && paymentAvailable;
 
   function formatPrice(amount) {
-    return `$${amount.toFixed(2)} ${currencyCode}`;
+    return `${getDisplayCurrency(selectedCurrency).code} ${formatLicensePrice(amount, selectedCurrency)}`;
   }
 
   function handleSubmit(event) {
@@ -78,6 +58,11 @@ export default function Checkout({
         "Your order could not be found. Please return to your cart and try again."
       );
 
+      return;
+    }
+
+    if (hasBusinessItems) {
+      setPaymentMessage("Business License purchases are completed securely on Gumroad.");
       return;
     }
 
@@ -314,8 +299,8 @@ export default function Checkout({
               <div className="mt-6 space-y-4">
 
                 {items.map((item) => {
-                  const isCreator =
-                    item.license?.type === "creator";
+                  const itemPrice = getLicensePrice(item.license);
+                  const isCreator = item.license?.type === "creator";
 
                   return (
                     <div
@@ -348,9 +333,7 @@ export default function Checkout({
                         </h3>
 
                         <p className="mt-1 font-sans text-[11px] text-white/35">
-                          {isCreator
-                            ? `$${CREATOR_LICENSE_PRICE.toFixed(2)}`
-                            : "Custom"}
+                          {formatPrice(itemPrice)}
                         </p>
 
                       </div>
@@ -368,9 +351,15 @@ export default function Checkout({
                   </p>
 
                   <p className="mt-2 font-sans text-[11px] leading-5 text-white/40">
-                    Business licensing requires project
-                    validation and custom pricing.
+                    Business License purchases are completed securely on Gumroad.
+                    Return to Music and choose Get License from the license selector. For special uses, contact DAMTARO.
                   </p>
+                  <button type="button" onClick={onContinueShopping} className="mt-3 mr-3 min-h-11 rounded-lg border border-orange-500/40 px-4 py-2 text-sm font-semibold text-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400">
+                    Explore Music
+                  </button>
+                  <button type="button" onClick={onContactSales} className="mt-3 min-h-11 rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:border-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400">
+                    Contact DAMTARO
+                  </button>
                 </div>
               )}
 
@@ -389,9 +378,7 @@ export default function Checkout({
                   </div>
 
                   <p className="mt-2 font-sans text-[9px] leading-5 text-white/20">
-                    Pricing currently uses USD as the
-                    base price. Currency conversion will
-                    be connected with the financial system.
+                    Fixed nominal prices shown in {getDisplayCurrency(selectedCurrency).code}. Gumroad checkout prices are in USD. No currency conversion is applied.
                   </p>
 
                 </div>
@@ -492,26 +479,12 @@ export default function Checkout({
               {/* Confirmation */}
               <div className="mt-6 pt-1">
 
-                <label className="flex cursor-pointer items-start gap-3">
-
-                  <input
-                    type="checkbox"
-                    checked={termsAccepted}
-                    onChange={(event) =>
-                      setTermsAccepted(
-                        event.target.checked
-                      )
-                    }
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-orange-500"
-                  />
-
-                  <span className="font-sans text-[11px] leading-5 text-white/45">
-                    I confirm that the information
-                    provided is accurate and that I
-                    understand the selected license.
-                  </span>
-
-                </label>
+                <LegalAcceptance
+                  checked={termsAccepted}
+                  onChange={setTermsAccepted}
+                  onReadLegal={onReadLegal}
+                  confirmInformation
+                />
 
               </div>
 
@@ -528,7 +501,7 @@ export default function Checkout({
                 disabled={!checkoutReady}
                 className="mt-6 w-full bg-orange-500 px-6 py-4 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:bg-orange-400 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/25"
               >
-                Continue to Secure Payment
+                {hasBusinessItems ? "Purchase from License Selector" : "Continue to Secure Payment"}
               </button>
 
               <button

@@ -1,23 +1,43 @@
-import { useEffect } from "react";
+import { formatLicensePrice, getDisplayCurrency } from "../../utils/licensePriceDisplay";
+import { useEffect, useRef } from "react";
 
-import {
-  CREATOR_LICENSE_PRICE,
-  default as licenses,
-} from "../../data/licenses";
+import licenses from "../../data/licenses";
 import Button from "../ui/Button";
+import LegalAcceptance from "./LegalAcceptance";
 
 export default function LicenseModal({
   open,
   onClose,
   track,
   onAddToCart,
+  onNavigate,
+  selectedCurrency,
+  termsAccepted,
+  onAcceptanceChange,
+  onReadLegal,
 }) {
+  const dialogRef = useRef(null);
   useEffect(() => {
     if (!open) return undefined;
+    const trigger = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    dialogRef.current?.querySelector("button")?.focus({ preventScroll: true });
 
     function handleKey(event) {
       if (event.key === "Escape") {
         onClose();
+      }
+      if (event.key === "Tab") {
+        const controls = [...dialogRef.current.querySelectorAll("button:not(:disabled), input:not(:disabled)")];
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
       }
     }
 
@@ -25,14 +45,16 @@ export default function LicenseModal({
     window.addEventListener("keydown", handleKey);
 
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKey);
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
     };
   }, [open, onClose]);
 
   if (!open) return null;
 
   function handleAddToCart(license) {
+    if (!termsAccepted) return;
     onAddToCart({
       license,
       track,
@@ -49,6 +71,7 @@ export default function LicenseModal({
           event.stopPropagation()
         }
         role="dialog" aria-modal="true" aria-label="Licensing options"
+        ref={dialogRef}
         className="relative max-h-[calc(100dvh-2rem)] w-full max-w-4xl overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 shadow-2xl"
       >
         <button
@@ -96,53 +119,31 @@ export default function LicenseModal({
             </div>
           )}
 
+          <div className="mb-5 rounded-xl border border-zinc-800 p-3">
+            <LegalAcceptance checked={termsAccepted} onChange={onAcceptanceChange} onReadLegal={onReadLegal} />
+          </div>
           <div className="grid gap-5 lg:grid-cols-2">
-            <LicenseOption
-              license={licenses[0]}
-              price={`$${CREATOR_LICENSE_PRICE}`}
-              subtitle="Starting at"
-              payment="One-time payment"
-              onSelect={() =>
-                handleAddToCart(licenses[0])
-              }
-            />
-
-            <LicenseOption
-              license={licenses[1]}
-              price="$149"
-              subtitle="Starting from"
-              description="Tailored licensing for brands, agencies, games and commercial productions."
-              variant="secondary"
-              onSelect={() =>
-                handleAddToCart(licenses[1])
-              }
-            />
+            {licenses.map((license) => (
+              <LicenseOption
+                key={license.id}
+                license={license}
+                selectedCurrency={selectedCurrency}
+                variant={license.type === "business" ? "secondary" : "primary"}
+                onSelect={() => handleAddToCart(license)}
+                disabled={!termsAccepted}
+              />
+            ))}
           </div>
 
-          <div className="mt-6 border-t border-zinc-800 pt-6">
-            <div className="space-y-3 text-sm text-zinc-400">
-              <LicenseNote>
-                <strong className="text-white">
-                  One-time payment.
-                </strong>{" "}
-                No recurring fees or hidden charges.
-              </LicenseNote>
-
-              <LicenseNote>
-                <strong className="text-white">
-                  No attribution required.
-                </strong>{" "}
-                Use your licensed track without mandatory
-                credits.
-              </LicenseNote>
-
-              <LicenseNote>
-                <strong className="text-white">
-                  Lifetime license.
-                </strong>{" "}
-                Valid forever for the licensed project.
-              </LicenseNote>
-            </div>
+          <div className="mt-5 border-t border-zinc-800 pt-5">
+            <h3 className="text-base font-semibold text-white">Need something beyond Business?</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-400">
+              Film, TV, radio, games, apps, software, broadcast, large campaigns,
+              exclusive rights and other special uses require custom licensing.
+            </p>
+            <Button variant="secondary" className="mt-3 min-h-11" onClick={() => onNavigate("contact")}>
+              Contact for Custom Licensing
+            </Button>
           </div>
         </div>
       </div>
@@ -150,85 +151,29 @@ export default function LicenseModal({
   );
 }
 
-function LicenseOption({
-  license,
-  price,
-  subtitle,
-  payment,
-  description,
-  variant = "primary",
-  onSelect,
-}) {
+function LicenseOption({ license, selectedCurrency, variant = "primary", onSelect, disabled }) {
   return (
-    <article className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+    <article className="flex min-w-0 flex-col rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
       <div className="flex items-center gap-3">
-        <span className="text-3xl">
-          {license.icon}
-        </span>
-
-        <h3 className="text-xl font-bold text-white">
-          {license.title}
-        </h3>
+        <span aria-hidden="true" className="text-2xl">{license.icon}</span>
+        <h3 className="text-xl font-bold text-white">{license.title}</h3>
       </div>
-
-      <p className="mt-4 text-xs uppercase tracking-widest text-orange-500">
-        {subtitle}
+      <p className="mt-3 text-4xl font-black text-white">
+        {formatLicensePrice(license.price, selectedCurrency)} <span className="text-xs font-normal text-zinc-400">{getDisplayCurrency(selectedCurrency).code} / track</span>
       </p>
-
-      <h2 className="mt-2 text-5xl font-black text-white">
-        {price}
-      </h2>
-
-      {payment && (
-        <p className="text-zinc-500">
-          {payment}
-        </p>
-      )}
-
-      {description && (
-        <p className="mt-2 text-sm leading-6 text-zinc-400">
-          {description}
-        </p>
-      )}
-
-      <div className="mt-5 space-y-2">
+      <p className="mt-3 text-sm leading-6 text-zinc-400">{license.description}</p>
+      <ul className="mt-4 space-y-1.5">
         {license.features.map((feature) => (
-          <div
-            key={feature}
-            className="flex items-center gap-2"
-          >
-            <span className="text-orange-500">
-              &#10003;
-            </span>
-
-            <span className="text-sm text-zinc-300">
-              {feature}
-            </span>
-          </div>
+          <li key={feature} className="flex items-start gap-2 text-sm leading-5 text-zinc-300">
+            <span aria-hidden="true" className="text-orange-500">&#10003;</span>
+            <span>{feature}</span>
+          </li>
         ))}
-      </div>
-
-      <div className="mt-6">
-        <Button
-          variant={variant}
-          className="w-full"
-          onClick={onSelect}
-        >
-          {license.button}
-        </Button>
+      </ul>
+      <p className="mt-4 border-t border-white/10 pt-3 text-xs leading-5 text-zinc-400">{license.boundary}</p>
+      <div className="mt-auto pt-4">
+        <Button variant={variant} disabled={disabled} className="min-h-11 w-full disabled:cursor-not-allowed disabled:opacity-50" onClick={onSelect}>{license.button}</Button>
       </div>
     </article>
-  );
-}
-
-function LicenseNote({ children }) {
-  return (
-    <div className="flex items-start gap-3">
-      <span className="text-orange-500">
-        &#10003;
-      </span>
-
-      <p>{children}</p>
-    </div>
   );
 }

@@ -46,5 +46,8 @@ export function startPayment({
   const paymentRequest = preparePayment({ order });
   const provider = getPaymentProvider(providerName);
 
-  return provider.createPayment(paymentRequest);
+  return provider.createPayment({
+    ...paymentRequest,
+    items: order.items,
+  });
 }

@@ -22,15 +22,32 @@ const payphoneProvider = createPaymentProvider({
   },
 });
 
+const gumroadCheckouts = {
+  creator: "https://damtarooff.gumroad.com/l/cxmwf?wanted=true",
+  business: "https://damtarooff.gumroad.com/l/huwklw?wanted=true",
+};
+
 const gumroadProvider = createPaymentProvider({
   name: "gumroad",
 
   createPayment(paymentRequest) {
+    // These product links purchase one license; never redirect a whole cart
+    // to a single product or default an unknown type to Creator.
+    const items = paymentRequest.items;
+    if (!Array.isArray(items) || items.length !== 1) {
+      throw new Error("Gumroad direct checkout requires exactly one license item.");
+    }
+    const licenseType = items[0]?.licenseType;
+    if (!Object.hasOwn(gumroadCheckouts, licenseType)) {
+      throw new Error("Unsupported license type for Gumroad checkout.");
+    }
+    if (paymentRequest.currency !== "USD") {
+      throw new Error("Gumroad license checkout requires USD.");
+    }
     return {
       ...paymentRequest,
       provider: "gumroad",
-      checkoutUrl:
-        "https://damtarooff.gumroad.com/l/cxmwf?wanted=true",
+      checkoutUrl: gumroadCheckouts[licenseType],
     };
   },
 

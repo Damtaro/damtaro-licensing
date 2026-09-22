@@ -3,7 +3,7 @@ import LicenseCard from "../licensing/LicenseCard";
 
 import licenses from "../../data/licenses";
 
-export default function Licensing({ onLicense }) {
+export default function Licensing({ onLicense, selectedCurrency }) {
   return (
     <section id="licensing" className="scroll-mt-24 py-24">
 
@@ -33,6 +33,7 @@ export default function Licensing({ onLicense }) {
             <LicenseCard
               key={license.id}
               license={license}
+              selectedCurrency={selectedCurrency}
               onLicense={onLicense}
             />
 

@@ -2,7 +2,7 @@ import Container from "../ui/Container";
 import PricingCard from "./PricingCard";
 import pricing from "../../data/pricing";
 
-export default function Pricing({ onLicense }) {
+export default function Pricing({ onLicense, selectedCurrency }) {
   return (
     <section id="pricing" className="scroll-mt-24 py-28">
 
@@ -22,8 +22,7 @@ export default function Pricing({ onLicense }) {
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-zinc-400">
             Choose the license that best fits your project.
-            Every purchase includes a lifetime license for the selected project,
-            with no recurring fees and no hidden charges.
+            Perpetual coverage for authorized uses.
           </p>
 
         </div>
@@ -35,6 +34,7 @@ export default function Pricing({ onLicense }) {
             <PricingCard
               key={plan.id}
               pricing={plan}
+              selectedCurrency={selectedCurrency}
               onLicense={onLicense}
             />
 

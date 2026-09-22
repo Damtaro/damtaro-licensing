@@ -38,57 +38,7 @@ export default function Navbar({
     };
   }, [isMenuOpen]);
 
-  const [isVisible, setIsVisible] = useState(true);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
-
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    function updateNavbar() {
-      const currentScrollY = window.scrollY;
-
-      if (activeView === "home" && currentScrollY <= 40) {
-        setIsVisible(true);
-        setIsScrolled(false);
-
-        lastScrollY = currentScrollY;
-        ticking = false;
-        return;
-      }
-
-      setIsScrolled(currentScrollY > 40);
-
-      if (currentScrollY > lastScrollY) {
-        setIsVisible(false);
-      }
-
-      if (currentScrollY < lastScrollY) {
-        setIsVisible(true);
-      }
-
-      lastScrollY = currentScrollY;
-      ticking = false;
-    }
-
-    updateNavbar();
-
-    function handleScroll() {
-      if (!ticking) {
-        window.requestAnimationFrame(updateNavbar);
-        ticking = true;
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [activeView]);
 
   useEffect(() => {
     function handleOutsideClick(event) {
@@ -116,45 +66,23 @@ export default function Navbar({
   }
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-transform duration-500 ease-out ${
-        isVisible || isMenuOpen ? "translate-y-0" : "max-xl:translate-y-0 xl:-translate-y-full"
-      }`}
-    >
-      <div
-        className={`transition-all duration-500 ${
-          isScrolled || activeView !== "home"
-            ? "border-b border-white/10 bg-[#090909]/85 backdrop-blur-md"
-            : "bg-transparent"
-        }`}
-      >
+    <header className="relative z-50 border-b border-white/10 bg-[#090909]">
+      <div>
         <Container>
           <div
-            className={`relative flex items-center transition-all duration-500 ${
-              isScrolled || activeView !== "home"
-                ? "min-h-20 justify-between py-3"
-                : "min-h-20 justify-between py-3 xl:min-h-40 xl:justify-center xl:py-5"
-            }`}
+            className="flex min-h-20 items-center justify-between gap-6 py-3 xl:grid xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
           >
             {/* Logo */}
             <button
               type="button"
               onClick={() => handleNavigation("home")}
               aria-label="DAMTARO Home"
-              className={`transition-all duration-500 ${
-                isScrolled || activeView !== "home"
-                  ? "relative z-10 shrink-0"
-                  : "relative shrink-0 xl:absolute xl:left-1/2 xl:top-5 xl:-translate-x-1/2"
-              }`}
+              className="shrink-0 justify-self-start"
             >
               <img
                 src={logo}
                 alt="DAMTARO"
-                className={`w-auto object-contain transition-all duration-500 ${
-                  isScrolled || activeView !== "home"
-                    ? "h-10"
-                    : "h-10 xl:h-20"
-                }`}
+                className="h-10 w-auto object-contain"
               />
             </button>
 
@@ -163,11 +91,7 @@ export default function Navbar({
             </button>
             {/* Main Navigation */}
             <nav
-              className={`hidden items-center font-sans text-sm font-bold text-white transition-all duration-500 xl:flex ${
-                isScrolled || activeView !== "home"
-                  ? "mx-auto gap-8"
-                  : "mt-24 gap-9"
-              }`}
+              className="hidden items-center justify-center gap-6 whitespace-nowrap font-sans text-sm font-bold text-white xl:flex"
             >
               <button
                 type="button"
@@ -210,6 +134,20 @@ export default function Navbar({
               <button
                 type="button"
                 onClick={() =>
+                  handleNavigation("sample-packs")
+                }
+                className={`transition-colors duration-200 ${
+                  activeView === "sample-packs"
+                    ? "text-orange-400"
+                    : "text-white hover:text-orange-400"
+                }`}
+              >
+                Sample Packs
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
                   handleNavigation("contact")
                 }
                 className={`transition-colors duration-200 ${
@@ -224,11 +162,7 @@ export default function Navbar({
 
             {/* Utility Controls */}
             <div
-              className={`hidden items-center font-sans text-xs font-bold text-white transition-all duration-500 xl:flex ${
-                isScrolled || activeView !== "home"
-                  ? "relative z-10 shrink-0 gap-4"
-                  : "absolute right-0 top-7 z-10 gap-5"
-              }`}
+              className="hidden items-center justify-self-end gap-4 whitespace-nowrap font-sans text-xs font-bold text-white xl:flex"
             >
               {/* Currency Selector */}
               <div
@@ -337,43 +271,6 @@ export default function Navbar({
                 )}
               </div>
 
-              {/* Account */}
-              <button
-                type="button"
-                onClick={() =>
-                  handleNavigation("login")
-                }
-                className={`text-white transition-colors duration-200 hover:text-orange-400 ${
-                  activeView === "login" ||
-                  activeView === "register"
-                    ? "text-orange-400"
-                    : ""
-                }`}
-                aria-label="Account"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="h-6 w-6"
-                  aria-hidden="true"
-                >
-                  <circle
-                    cx="12"
-                    cy="8"
-                    r="3.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-
-                  <path
-                    d="M5 20C5.8 16.8 8.3 15 12 15C15.7 15 18.2 16.8 19 20"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </button>
-
               {/* Licensing Cart */}
               <button
                 type="button"
@@ -427,7 +324,7 @@ export default function Navbar({
               <button type="button" onClick={() => setIsMenuOpen(false)} aria-label="Close navigation menu" className="h-11 w-11 shrink-0 rounded-xl border border-white/20 text-2xl">&times;</button>
             </div>
             <nav aria-label="Mobile navigation" className="grid gap-2">
-              {[["home", "Home"], ["music", "Music"], ["how-to-use", "How to Use"], ["contact", "Contact"], ["login", "Account"]].map(([view, label]) => (
+              {[["home", "Home"], ["music", "Music"], ["how-to-use", "How to Use"], ["sample-packs", "Sample Packs"], ["contact", "Contact"]].map(([view, label]) => (
                 <button key={view} type="button" onClick={() => handleNavigation(view)} aria-current={activeView === view ? "page" : undefined} className={"min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5 " + (activeView === view ? "bg-orange-500/10 text-orange-400" : "text-white")}>{label}</button>
               ))}
               <button type="button" onClick={() => { setIsMenuOpen(false); onOpenCart(); }} className="min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5">Licensing cart ({cartItemCount})</button>

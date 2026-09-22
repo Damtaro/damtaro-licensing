@@ -1,14 +1,15 @@
+import { formatLicensePrice, getDisplayCurrency } from "../../utils/licensePriceDisplay";
 import { useEffect, useMemo, useState } from "react";
-import { CREATOR_LICENSE_PRICE } from "../../data/licenses";
+import { getLicensePrice } from "../../services/orderService";
 
 export default function CartDrawer({
+  selectedCurrency,
   open,
   onClose,
   items = [],
   onRemoveItem,
   onContinueShopping,
   onProceedToCheckout,
-  onContactSales,
   lastAddedItem = null,
 }) {
   const [isMounted, setIsMounted] = useState(false);
@@ -58,28 +59,16 @@ export default function CartDrawer({
     };
   }, [isMounted, onClose]);
 
-  const creatorItems = useMemo(() => {
-    return items.filter(
-      (item) => item.license?.type === "creator"
-    );
+  const subtotal = useMemo(() => {
+    return items.reduce((total, item) => total + getLicensePrice(item.license), 0);
   }, [items]);
-
-  const businessItems = useMemo(() => {
-    return items.filter(
-      (item) => item.license?.type === "business"
-    );
-  }, [items]);
-
-  const creatorSubtotal = useMemo(() => {
-    return creatorItems.length * CREATOR_LICENSE_PRICE;
-  }, [creatorItems]);
 
   const totalItems = items.length;
 
   if (!isMounted) return null;
 
   function formatPrice(amount) {
-    return `$${amount.toFixed(2)}`;
+    return `${getDisplayCurrency(selectedCurrency).code} ${formatLicensePrice(amount, selectedCurrency)}`;
   }
 
   return (
@@ -207,6 +196,7 @@ export default function CartDrawer({
                   <CartItem
                     key={item.id}
                     item={item}
+                    selectedCurrency={selectedCurrency}
                     onRemove={() =>
                       onRemoveItem(item.id)
                     }
@@ -214,27 +204,7 @@ export default function CartDrawer({
                 ))}
               </div>
 
-              {businessItems.length > 0 && (
-                <div className="mt-8 border border-orange-500/20 bg-orange-500/5 p-5">
-                  <p className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-orange-400">
-                    Business Licensing
-                  </p>
 
-                  <p className="mt-3 font-sans text-sm leading-6 text-white/60">
-                    Business licensing is tailored
-                    to the project and requires
-                    validation before purchase.
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={onContactSales}
-                    className="mt-4 font-sans text-xs font-bold uppercase tracking-[0.16em] text-white transition-colors duration-200 hover:text-orange-400"
-                  >
-                    Contact DAMTARO
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>
@@ -248,21 +218,18 @@ export default function CartDrawer({
               </span>
 
               <span className="font-display text-2xl font-medium text-white">
-                {formatPrice(creatorSubtotal)}
+                {formatPrice(subtotal)}
               </span>
             </div>
 
             <p className="mt-2 font-sans text-[11px] leading-5 text-white/30">
-              Creator License pricing shown in
-              USD. Business licensing is handled
-              separately according to project
-              requirements.
+              Fixed nominal prices shown in {getDisplayCurrency(selectedCurrency).code}. Gumroad checkout prices are in USD.
             </p>
 
             <button
               type="button"
               onClick={onProceedToCheckout}
-              disabled={creatorItems.length === 0}
+              disabled={items.length === 0}
               className="mt-6 w-full bg-orange-500 px-6 py-4 font-sans text-xs font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-orange-400 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
             >
               Proceed to Checkout
@@ -309,14 +276,11 @@ function EmptyCart({ onContinueShopping }) {
   );
 }
 
-function CartItem({ item, onRemove }) {
+function CartItem({ item, onRemove, selectedCurrency }) {
   const track = item.track;
   const license = item.license;
 
-  const isCreator = license?.type === "creator";
-  const price = isCreator
-    ? `$${CREATOR_LICENSE_PRICE.toFixed(2)}`
-    : "Custom";
+  const price = `${getDisplayCurrency(selectedCurrency).code} ${formatLicensePrice(getLicensePrice(license), selectedCurrency)}`;
 
   return (
     <article className="border border-white/10 bg-white/[0.02] p-4">

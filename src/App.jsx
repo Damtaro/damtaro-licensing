@@ -1,5 +1,5 @@
 import "./index.css";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import AnimatedBackground from "./components/AnimatedBackground";
 
@@ -8,11 +8,13 @@ import Navbar from "./components/layout/Navbar";
 import Hero from "./components/sections/Hero";
 import Licensing from "./components/sections/Licensing";
 import HowToUse from "./components/sections/HowToUse";
+import SamplePacks from "./components/sections/SamplePacks";
 import Contact from "./components/sections/Contact";
+import Footer from "./components/sections/Footer";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
+import LegalInformation from "./pages/LegalInformation";
+import { legalDocuments } from "./data/legalDocuments";
 
 import SearchSection from "./components/search/SearchSection";
 
@@ -33,6 +35,8 @@ import { PlayerProvider } from "./context/PlayerContext.jsx";
 
 function App() {
   const [activeView, setActiveView] = useState("home");
+  const [licenseTermsAccepted, setLicenseTermsAccepted] = useState(false);
+  const [legalReturn, setLegalReturn] = useState(null);
 
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({});
@@ -40,6 +44,7 @@ function App() {
   const [modalTrack, setModalTrack] = useState(null);
   const [isLicenseModalOpen, setIsLicenseModalOpen] =
     useState(false);
+  const closeLicenseModal = useCallback(() => setIsLicenseModalOpen(false), []);
 
   const [selectedTrack, setSelectedTrack] =
     useState(null);
@@ -113,6 +118,8 @@ function App() {
   }, [filters, query]);
 
   function openLicenseModal(track = null) {
+    setLicenseTermsAccepted(false);
+    setLegalReturn(null);
     setModalTrack(track);
     setIsLicenseModalOpen(true);
   }
@@ -123,6 +130,8 @@ function App() {
   }
 
   function handleNavigate(view) {
+    if (!Object.hasOwn(legalDocuments, view)) setLegalReturn(null);
+    setLicenseTermsAccepted(false);
     setActiveView(view);
 
     setIsLicenseModalOpen(false);
@@ -134,6 +143,18 @@ function App() {
       top: 0,
       behavior: "auto",
     });
+  }
+
+  function handleReadLegal(view, source) {
+    setLegalReturn({ source, view: activeView });
+    handleNavigate(view);
+  }
+
+  function handleReturnFromLegal() {
+    if (!legalReturn) return;
+    const { source, view } = legalReturn;
+    handleNavigate(view);
+    if (source === "license") setIsLicenseModalOpen(true);
   }
 
   function handleCurrencyChange(currencyCode) {
@@ -158,16 +179,16 @@ function App() {
     license,
     track,
   }) {
+    if (!licenseTermsAccepted) return;
     const cartItem = {
       id: `${track?.id || "catalog"}-${license.id || license.title}-${Date.now()}`,
       track,
       license,
     };
 
-    if (license?.type === "creator") {
+    if (license?.type === "creator" || license?.type === "business") {
       const order = createOrder({
         items: [cartItem],
-        currency: selectedCurrency.code,
       });
 
       setCurrentOrder(order);
@@ -222,7 +243,6 @@ function App() {
 
     const order = createOrder({
       items: cartItems,
-      currency: selectedCurrency.code,
     });
 
     setCurrentOrder(order);
@@ -268,6 +288,15 @@ function App() {
       />
 
       <main className="min-h-screen bg-[#090909]">
+        {Object.hasOwn(legalDocuments, activeView) && (
+          <LegalInformation
+            key={activeView}
+            document={legalDocuments[activeView]}
+            onNavigate={handleNavigate}
+            onReturn={legalReturn ? handleReturnFromLegal : undefined}
+            returnLabel={legalReturn?.source === "license" ? "Back to license selection" : "Back to checkout"}
+          />
+        )}
 
         {/* Home */}
         {activeView === "home" && (
@@ -298,12 +327,14 @@ function App() {
         {activeView === "licensing" && (
           <section className="min-h-screen pt-32 pb-24">
             <Licensing
+              selectedCurrency={selectedCurrency}
               onLicense={() =>
                 openLicenseModal()
               }
             />
 
             <Pricing
+              selectedCurrency={selectedCurrency}
               onLicense={() =>
                 openLicenseModal()
               }
@@ -313,55 +344,54 @@ function App() {
 
         {/* How to Use */}
         {activeView === "how-to-use" && (
-          <section className="min-h-screen pt-32 pb-24">
-            <HowToUse />
+          <section className="min-h-screen">
+            <HowToUse onNavigate={handleNavigate} />
           </section>
+        )}
+
+        {activeView === "sample-packs" && (
+          <SamplePacks onNavigate={handleNavigate} />
         )}
 
         {/* Contact */}
         {activeView === "contact" && (
-          <section className="min-h-screen pt-32 pb-24">
+          <section className="min-h-screen">
             <Contact />
           </section>
         )}
 
-        {/* Login */}
-        {activeView === "login" && (
-          <Login
-            onNavigate={handleNavigate}
-          />
-        )}
-
-        {/* Register */}
-        {activeView === "register" && (
-          <Register
-            onNavigate={handleNavigate}
-          />
-        )}
-
         {/* Checkout */}
-        {activeView === "checkout" && (
+        {(activeView === "checkout" || legalReturn?.source === "checkout") && (
+          <div hidden={activeView !== "checkout"}>
           <Checkout
+            onReadLegal={(view) => handleReadLegal(view, "checkout")}
+            selectedCurrency={selectedCurrency}
             items={cartItems}
             order={currentOrder}
-            selectedCurrency={selectedCurrency}
+            onContactSales={handleContactSales}
             onBackToCart={handleBackToCart}
             onContinueShopping={() =>
               handleNavigate("music")
             }
           />
+          </div>
         )}
 
       </main>
 
+      <Footer onNavigate={handleNavigate} />
+
       {/* License Modal */}
       <LicenseModal
+        termsAccepted={licenseTermsAccepted}
+        onAcceptanceChange={setLicenseTermsAccepted}
+        onReadLegal={(view) => handleReadLegal(view, "license")}
+        selectedCurrency={selectedCurrency}
         open={isLicenseModalOpen}
-        onClose={() =>
-          setIsLicenseModalOpen(false)
-        }
+        onClose={closeLicenseModal}
         track={modalTrack}
         onAddToCart={handleAddToCart}
+        onNavigate={handleNavigate}
       />
 
       {/* Track Detail */}
@@ -377,6 +407,7 @@ function App() {
 
       {/* Cart Drawer */}
       <CartDrawer
+        selectedCurrency={selectedCurrency}
         open={isCartOpen}
         onClose={handleCloseCart}
         items={cartItems}
@@ -385,7 +416,6 @@ function App() {
         onProceedToCheckout={
           handleProceedToCheckout
         }
-        onContactSales={handleContactSales}
         lastAddedItem={lastAddedItem}
       />
     </PlayerProvider>
