@@ -23,8 +23,23 @@ const payphoneProvider = createPaymentProvider({
 });
 
 const gumroadCheckouts = {
-  creator: "https://damtarooff.gumroad.com/l/cxmwf?wanted=true",
-  business: "https://damtarooff.gumroad.com/l/huwklw?wanted=true",
+  // Stable track IDs from src/data/tracks.js.
+  1: { // BLIND
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=iVqgskMFFEY4umbdgkWd7w%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=9JAK-Dqy7T5U73vL6fk__Q%3D%3D",
+  },
+  2: { // CONTROL
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=SFQ_c_3qx6x4rRQgMhpW4w%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=Gk-u85_dZN5jsmrMKxbYug%3D%3D",
+  },
+  3: { // ELEVATION
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=SplyuJZ7f-tRFBNHUCNcog%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=Z51sAJIV0rUJ9oAWQw_J6g%3D%3D",
+  },
+  4: { // FEEL AGAIN
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=ZxoUcnKMaY-oGqsUihgNAw%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=NhmSOlNPBPEeQkxFBSK03w%3D%3D",
+  },
 };
 
 const gumroadProvider = createPaymentProvider({
@@ -38,8 +53,12 @@ const gumroadProvider = createPaymentProvider({
       throw new Error("Gumroad direct checkout requires exactly one license item.");
     }
     const licenseType = items[0]?.licenseType;
-    if (!Object.hasOwn(gumroadCheckouts, licenseType)) {
-      throw new Error("Unsupported license type for Gumroad checkout.");
+    const trackId = items[0]?.trackId;
+    if (
+      !Object.hasOwn(gumroadCheckouts, trackId) ||
+      !Object.hasOwn(gumroadCheckouts[trackId], licenseType)
+    ) {
+      throw new Error("Gumroad checkout is not configured for this track and license type.");
     }
     if (paymentRequest.currency !== "USD") {
       throw new Error("Gumroad license checkout requires USD.");
@@ -47,7 +66,7 @@ const gumroadProvider = createPaymentProvider({
     return {
       ...paymentRequest,
       provider: "gumroad",
-      checkoutUrl: gumroadCheckouts[licenseType],
+      checkoutUrl: `${gumroadCheckouts[trackId][licenseType]}&wanted=true`,
     };
   },
 
