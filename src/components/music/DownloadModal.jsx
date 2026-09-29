@@ -44,7 +44,7 @@ export default function DownloadModal({ track, onClose, onReadTerms, onLicense }
           <h2 id={titleId} className="pr-10 text-2xl font-semibold">Download &amp; Create 🎵</h2>
           <p className="mt-2 break-words font-medium text-orange-400">{track.title}</p>
           <p className="mt-5 text-sm leading-6 text-zinc-300">You’re welcome to use this track in your personal and non-commercial content.</p>
-          <p className="mt-3 text-sm leading-6 text-zinc-300">Just remember to credit DAMTARO so people can discover the music too. 😊</p>
+          <p className="mt-3 text-sm leading-6 text-zinc-300">Just give credit to DAMTARO so people can discover the music too. 😊</p>
           <div className="mt-5 rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
             <p className="text-xs font-semibold tracking-widest text-zinc-400">CREDIT</p>
             <p className="mt-2 select-text break-words text-sm">{credit}</p>
