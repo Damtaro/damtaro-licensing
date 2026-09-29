@@ -9,7 +9,7 @@ const unavailableFilters = ["Energy", "Vocals"];
 
 export default function SearchSection({ query, onQueryChange, filters, onFiltersChange }) {
   const [activeFilter, setActiveFilter] = useState(null);
-  const options = useMemo(() => Object.fromEntries(availableFilters.map((key) => [key, [...new Set(tracks.map((track) => String(track[key])))]])), []);
+  const options = useMemo(() => Object.fromEntries(availableFilters.map((key) => [key, [...new Set(tracks.flatMap((track) => track[key] == null ? [] : [track[key]].flat().map(String)))]])), []);
 
   function selectOption(key, value) {
     onFiltersChange((current) => {

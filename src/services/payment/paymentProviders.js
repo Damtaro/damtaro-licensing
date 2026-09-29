@@ -40,6 +40,10 @@ const gumroadCheckouts = {
     creator: "https://damtarooff.gumroad.com/l/cxmwf?option=ZxoUcnKMaY-oGqsUihgNAw%3D%3D",
     business: "https://damtarooff.gumroad.com/l/mzitdy?option=NhmSOlNPBPEeQkxFBSK03w%3D%3D",
   },
+  5: { // CTRL ME
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=epj8kkPJevFMc4mAX6TccQ%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=OWE-3PoUhuiKANnX15TziA%3D%3D",
+  },
 };
 
 const gumroadProvider = createPaymentProvider({

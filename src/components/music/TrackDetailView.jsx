@@ -31,9 +31,12 @@ export default function TrackDetailView({ open, track, onClose, onLicense, suppr
 
             <div className="mt-6 flex flex-wrap gap-2">
               <span className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-white">{track.bpm} BPM</span>
-              <span className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-white">{track.mood}</span>
-              <span className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-white">{track.duration}</span>
+              <span className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-white">{[track.mood].flat().join(" / ")}</span>
+              {track.duration && <span className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-white">{track.duration}</span>}
             </div>
+
+            {track.description && <p className="mt-5 text-sm text-zinc-400">{track.description}</p>}
+            {track.potentialUses && <p className="mt-3 text-sm text-zinc-400">Potential uses: {track.potentialUses.join(", ")}</p>}
 
             <div className="mt-8"><AudioPlayer track={track} /></div>
             <Button onClick={() => onLicense(track)} className="mt-5 w-full">License this track</Button>

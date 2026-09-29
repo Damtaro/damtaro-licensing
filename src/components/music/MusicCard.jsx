@@ -3,21 +3,24 @@ import AudioPlayer from "./AudioPlayer";
 import StreamModal from "./StreamModal";
 import Button from "../ui/Button";
 
-export default function MusicCard({ track, onLicense, eagerArtwork = false }) {
+export default function MusicCard({ track, onLicense, onViewTrack, onDownload, eagerArtwork = false }) {
   const [isStreamOpen, setIsStreamOpen] = useState(false);
   return (
     <article className="music-card group grid min-w-0 gap-y-0 overflow-hidden rounded-3xl border border-white/[0.06] bg-[#101010] shadow-sm shadow-black/20 transition-colors duration-200 hover:border-orange-500/20 focus-within:border-orange-500/25">
-      <div className="px-4 pt-4">
+      <div className="relative px-4 pt-4">
         <img src={track.cover} alt={track.title} width={1200} height={1200} loading={eagerArtwork ? "eager" : "lazy"} decoding="async" className="h-44 w-full object-contain sm:h-48" />
+        {/\.mp3(?:[?#]|$)/i.test(track.preview ?? "") && <button type="button" onClick={() => onDownload(track)} aria-label={`Download ${track.title}`} title="Download" className="absolute right-[max(1.75rem,calc((100%_-_11rem)/2_+_0.75rem))] top-7 flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-black/35 text-zinc-200 shadow-sm shadow-black/10 backdrop-blur-[3px] transition-colors duration-200 hover:border-orange-500/50 hover:bg-black/50 hover:text-orange-400 sm:right-[max(1.75rem,calc((100%_-_12rem)/2_+_0.75rem))] sm:h-9 sm:w-9">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4h14v-4" /></svg>
+        </button>}
       </div>
 
-      <h3 className="px-4 pt-3 text-xl font-semibold leading-7 tracking-tight text-white">{track.title}</h3>
+      <h3 className="px-4 pt-3 text-xl font-semibold leading-7 tracking-tight text-white"><button type="button" onClick={() => onViewTrack(track)} aria-haspopup="dialog" className="text-left">{track.title}</button></h3>
       <p className="px-4 pt-1 text-sm leading-5 text-zinc-400">{track.genre}</p>
 
       <div className="flex flex-wrap content-start gap-2 px-4 pt-2">
         <span className="rounded-full border border-white/[0.04] bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-400">{track.bpm} BPM</span>
-        <span className="rounded-full border border-white/[0.04] bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-400">{track.mood}</span>
-        <span className="rounded-full border border-white/[0.04] bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-400">{track.duration}</span>
+        <span className="rounded-full border border-white/[0.04] bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-400">{track.primaryMood ?? [track.mood].flat().join(" / ")}</span>
+        {track.duration && <span className="rounded-full border border-white/[0.04] bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-400">{track.duration}</span>}
       </div>
 
       <div className="px-4 pt-3">

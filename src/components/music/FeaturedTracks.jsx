@@ -1,7 +1,7 @@
 import Container from "../ui/Container";
 import MusicCard from "../music/MusicCard";
 
-export default function FeaturedTracks({ tracks, onLicense, onViewTrack }) {
+export default function FeaturedTracks({ tracks, onLicense, onViewTrack, onDownload }) {
   return (
     <section id="catalog" aria-label="Track catalog" className="scroll-mt-24">
 
@@ -16,6 +16,7 @@ export default function FeaturedTracks({ tracks, onLicense, onViewTrack }) {
               eagerArtwork={index < 4}
               onLicense={onLicense}
               onViewTrack={onViewTrack}
+              onDownload={onDownload}
             />
           ))}
 

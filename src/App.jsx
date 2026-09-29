@@ -20,6 +20,7 @@ import SearchSection from "./components/search/SearchSection";
 
 import FeaturedTracks from "./components/music/FeaturedTracks";
 import TrackDetailView from "./components/music/TrackDetailView";
+import DownloadModal from "./components/music/DownloadModal";
 
 import Pricing from "./components/pricing/Pricing";
 import LicenseModal from "./components/licensing/LicenseModal";
@@ -39,6 +40,8 @@ function App() {
   const [legalReturn, setLegalReturn] = useState(null);
 
   const [query, setQuery] = useState("");
+  const [downloadTrack, setDownloadTrack] = useState(null);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const [filters, setFilters] = useState({});
 
   const [modalTrack, setModalTrack] = useState(null);
@@ -110,7 +113,9 @@ function App() {
         Object.entries(filters).every(
           ([key, value]) =>
             !value ||
-            String(track[key]) === value
+            (Array.isArray(track[key])
+              ? track[key].includes(value)
+              : String(track[key]) === value)
         );
 
       return matchesQuery && matchesFilters;
@@ -130,6 +135,7 @@ function App() {
   }
 
   function handleNavigate(view) {
+    setIsDownloadOpen(false);
     if (!Object.hasOwn(legalDocuments, view)) setLegalReturn(null);
     setLicenseTermsAccepted(false);
     setActiveView(view);
@@ -155,6 +161,7 @@ function App() {
     const { source, view } = legalReturn;
     handleNavigate(view);
     if (source === "license") setIsLicenseModalOpen(true);
+    if (source === "download") setIsDownloadOpen(true);
   }
 
   function handleCurrencyChange(currencyCode) {
@@ -294,7 +301,7 @@ function App() {
             document={legalDocuments[activeView]}
             onNavigate={handleNavigate}
             onReturn={legalReturn ? handleReturnFromLegal : undefined}
-            returnLabel={legalReturn?.source === "license" ? "Back to license selection" : "Back to checkout"}
+            returnLabel={legalReturn?.source === "download" ? "Back to download" : legalReturn?.source === "license" ? "Back to license selection" : "Back to checkout"}
           />
         )}
 
@@ -316,6 +323,7 @@ function App() {
             />
 
             <FeaturedTracks
+              onDownload={(track) => { setDownloadTrack(track); setIsDownloadOpen(true); }}
               tracks={filteredTracks}
               onLicense={openLicenseModal}
               onViewTrack={openTrackDetail}
@@ -382,6 +390,12 @@ function App() {
       <Footer onNavigate={handleNavigate} />
 
       {/* License Modal */}
+      {isDownloadOpen && downloadTrack && <DownloadModal
+        track={downloadTrack}
+        onClose={() => setIsDownloadOpen(false)}
+        onReadTerms={() => handleReadLegal("terms-of-service", "download")}
+        onLicense={() => { setIsDownloadOpen(false); openLicenseModal(downloadTrack); }}
+      />}
       <LicenseModal
         termsAccepted={licenseTermsAccepted}
         onAcceptanceChange={setLicenseTermsAccepted}
