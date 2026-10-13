@@ -44,6 +44,22 @@ const gumroadCheckouts = {
     creator: "https://damtarooff.gumroad.com/l/cxmwf?option=epj8kkPJevFMc4mAX6TccQ%3D%3D",
     business: "https://damtarooff.gumroad.com/l/mzitdy?option=OWE-3PoUhuiKANnX15TziA%3D%3D",
   },
+  6: { // CRAZY
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=v-zen6436OhzNY4LnxVB5Q%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=_pqVZPBx-ImwY-qRUZV2XQ%3D%3D",
+  },
+  7: { // GRAVITY
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=6rwuJV6593-1IJrmhkhumQ%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=pKAIlEYD8xk3XljiFzF50g%3D%3D",
+  },
+  8: { // REGAIN
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=RmyHKJZuxltAdj8jWTv-KA%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=pKYtglRi5ilU_ekr7pA_ZA%3D%3D",
+  },
+  9: { // TITAN
+    creator: "https://damtarooff.gumroad.com/l/cxmwf?option=hQVYbEfHfOUiLE-E6iVtfg%3D%3D",
+    business: "https://damtarooff.gumroad.com/l/mzitdy?option=dV2JDVVszfUGF5NIk6UY_Q%3D%3D",
+  },
 };
 
 const gumroadProvider = createPaymentProvider({

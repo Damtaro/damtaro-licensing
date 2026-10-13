@@ -123,6 +123,7 @@ function App() {
   }, [filters, query]);
 
   function openLicenseModal(track = null) {
+    if (track?.releaseReady === false) return;
     setLicenseTermsAccepted(false);
     setLegalReturn(null);
     setModalTrack(track);
@@ -186,7 +187,7 @@ function App() {
     license,
     track,
   }) {
-    if (!licenseTermsAccepted) return;
+    if (!licenseTermsAccepted || track?.releaseReady === false) return;
     const cartItem = {
       id: `${track?.id || "catalog"}-${license.id || license.title}-${Date.now()}`,
       track,
@@ -323,7 +324,7 @@ function App() {
             />
 
             <FeaturedTracks
-              onDownload={(track) => { setDownloadTrack(track); setIsDownloadOpen(true); }}
+              onDownload={(track) => { if (track.releaseReady === false) return; setDownloadTrack(track); setIsDownloadOpen(true); }}
               tracks={filteredTracks}
               onLicense={openLicenseModal}
               onViewTrack={openTrackDetail}

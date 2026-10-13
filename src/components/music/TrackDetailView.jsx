@@ -39,7 +39,7 @@ export default function TrackDetailView({ open, track, onClose, onLicense, suppr
             {track.potentialUses && <p className="mt-3 text-sm text-zinc-400">Potential uses: {track.potentialUses.join(", ")}</p>}
 
             <div className="mt-8"><AudioPlayer track={track} /></div>
-            <Button onClick={() => onLicense(track)} className="mt-5 w-full">License this track</Button>
+            <Button disabled={track.releaseReady === false} onClick={() => onLicense(track)} className="mt-5 w-full disabled:cursor-not-allowed disabled:opacity-50">License this track</Button>
           </div>
         </div>
       </section>

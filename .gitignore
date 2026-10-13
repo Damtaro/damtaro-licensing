@@ -14,6 +14,9 @@ node_modules
 dist
 dist-ssr
 
+# Original catalog preparation files (never publish or commit).
+/NEW TRACKS/
+
 # Local environment files
 *.local
 
