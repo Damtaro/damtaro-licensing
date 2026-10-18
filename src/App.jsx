@@ -14,6 +14,7 @@ import Footer from "./components/sections/Footer";
 
 import Checkout from "./pages/Checkout";
 import LegalInformation from "./pages/LegalInformation";
+import CustomAudio from "./pages/CustomAudio";
 import { legalDocuments } from "./data/legalDocuments";
 
 import SearchSection from "./components/search/SearchSection";
@@ -36,6 +37,7 @@ import { PlayerProvider } from "./context/PlayerContext.jsx";
 
 function App() {
   const [activeView, setActiveView] = useState("home");
+  const [customTrack, setCustomTrack] = useState(null);
   const [licenseTermsAccepted, setLicenseTermsAccepted] = useState(false);
   const [legalReturn, setLegalReturn] = useState(null);
 
@@ -45,6 +47,7 @@ function App() {
   const [filters, setFilters] = useState({});
 
   const [modalTrack, setModalTrack] = useState(null);
+  const [licenseSelectionSession, setLicenseSelectionSession] = useState(0);
   const [isLicenseModalOpen, setIsLicenseModalOpen] =
     useState(false);
   const closeLicenseModal = useCallback(() => setIsLicenseModalOpen(false), []);
@@ -124,6 +127,7 @@ function App() {
 
   function openLicenseModal(track = null) {
     if (track?.releaseReady === false) return;
+    setLicenseSelectionSession(session => session + 1);
     setLicenseTermsAccepted(false);
     setLegalReturn(null);
     setModalTrack(track);
@@ -281,6 +285,11 @@ function App() {
     });
   }
 
+  function handleRequestCustom(track = null) {
+    setCustomTrack(track);
+    handleNavigate("custom-audio");
+  }
+
   return (
     <PlayerProvider>
       <AnimatedBackground />
@@ -302,14 +311,14 @@ function App() {
             document={legalDocuments[activeView]}
             onNavigate={handleNavigate}
             onReturn={legalReturn ? handleReturnFromLegal : undefined}
-            returnLabel={legalReturn?.source === "download" ? "Back to download" : legalReturn?.source === "license" ? "Back to license selection" : "Back to checkout"}
+            returnLabel={legalReturn?.source === "custom" ? "Back to custom request" : legalReturn?.source === "download" ? "Back to download" : legalReturn?.source === "license" ? "Back to license selection" : "Back to checkout"}
           />
         )}
 
         {/* Home */}
         {activeView === "home" && (
           <section className="min-h-screen">
-            <Hero />
+            <Hero onNavigate={handleNavigate} />
           </section>
         )}
 
@@ -363,6 +372,11 @@ function App() {
         )}
 
         {/* Contact */}
+        {(activeView === "custom-audio" || legalReturn?.source === "custom") && (
+          <div hidden={activeView !== "custom-audio"}>
+            <CustomAudio track={customTrack} onReadPrivacy={() => handleReadLegal("privacy-policy", "custom")} onBackToTrack={() => { handleNavigate("music"); openTrackDetail(customTrack); }} />
+          </div>
+        )}
         {activeView === "contact" && (
           <section className="min-h-screen">
             <Contact />
@@ -398,6 +412,8 @@ function App() {
         onLicense={() => { setIsDownloadOpen(false); openLicenseModal(downloadTrack); }}
       />}
       <LicenseModal
+        key={licenseSelectionSession}
+        onRequestCustom={handleRequestCustom}
         termsAccepted={licenseTermsAccepted}
         onAcceptanceChange={setLicenseTermsAccepted}
         onReadLegal={(view) => handleReadLegal(view, "license")}
@@ -411,6 +427,7 @@ function App() {
 
       {/* Track Detail */}
       <TrackDetailView
+        onRequestCustom={handleRequestCustom}
         open={isTrackDetailOpen}
         track={selectedTrack}
         onClose={() =>

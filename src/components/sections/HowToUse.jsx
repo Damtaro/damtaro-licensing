@@ -1,4 +1,5 @@
 import Container from "../ui/Container";
+import { CREATOR_LICENSE_PRICE, BUSINESS_LICENSE_PRICE } from "../../data/licenses";
 import youtubeSocial from "../../assets/how-to-use/youtube-social.webp";
 import podcastsBroadcast from "../../assets/how-to-use/podcasts-broadcast.webp";
 import onlineAdvertising from "../../assets/how-to-use/online-advertising.webp";
@@ -42,7 +43,7 @@ const licensingSteps = [
     number: "04",
     title: "Purchase",
     description:
-      "Complete the licensing process and secure the rights required for your project.",
+      "Review your license, accept the terms, then complete your purchase securely on Gumroad.",
   },
   {
     number: "05",
@@ -67,7 +68,7 @@ export default function HowToUse({ onNavigate }) {
         <div className="relative mx-auto max-w-3xl text-center">
 
           <p className="font-sans text-xs font-bold uppercase tracking-[0.28em] text-orange-500">
-            How to Use
+            Licensing Guide
           </p>
 
           <h1 id="how-to-use-title" className="mt-4 text-balance font-display text-4xl font-medium leading-[1.1] tracking-[-0.025em] text-white sm:text-5xl lg:text-6xl">
@@ -85,6 +86,21 @@ export default function HowToUse({ onNavigate }) {
           </button>
 
         </div>
+
+        <section aria-label="Choose your licensing path" className="mx-auto mt-10 max-w-6xl rounded-2xl border border-white/10 bg-[#121212] p-5 sm:p-7">
+          <h2 className="font-display text-2xl text-white">Which license do you need?</h2>
+          <dl className="mt-5 grid gap-5 text-sm leading-6 text-zinc-300 md:grid-cols-2">
+            <div><dt className="font-bold text-white">Creator · ${CREATOR_LICENSE_PRICE} USD / track · one-time purchase</dt><dd className="mt-1">Monetized videos and posts on your own channels. MP3 + WAV. No credit required. No client or brand commercial projects.</dd></div>
+            <div><dt className="font-bold text-white">Business · ${BUSINESS_LICENSE_PRICE} USD / track · one-time purchase</dt><dd className="mt-1">One client, company or brand commercial project or campaign. MP3 + WAV and official stems when available under License Terms. No credit required.</dd></div>
+            <div><dt className="font-bold text-white">Custom Licensing</dt><dd className="mt-1">Film, TV, radio, broadcast, games, apps, software, large campaigns, exclusivity and permissions beyond standard licenses. <button type="button" onClick={() => onNavigate("contact")} className="min-h-11 text-orange-400 underline">Discuss your use</button></dd></div>
+            <div><dt className="font-bold text-white">Custom Audio</dt><dd className="mt-1">Need an isolated sound, edit or original composition? Open a track in Browse Music and choose Request Custom Audio. Each request is reviewed separately; it does not grant a license.</dd></div>
+          </dl>
+          <div className="mt-5 border-t border-white/10 pt-4 text-sm leading-6 text-zinc-400">
+            <p>Free Use requires credit to DAMTARO and is limited to eligible personal, non-commercial content under the current terms. Monetization, client work and brand content need the appropriate paid license. Special uses require Custom Licensing, including non-commercial projects.</p>
+            <p className="mt-3">Content ID claim? Contact DAMTARO with your license proof and affected content. Claims may occur with a valid license; automatic removal or a resolution time is not guaranteed.</p>
+            <div className="mt-2 flex flex-wrap gap-x-5"><button type="button" onClick={() => onNavigate("license-terms")} className="min-h-11 text-orange-400 underline">License Terms</button><button type="button" onClick={() => onNavigate("terms-of-service")} className="min-h-11 text-orange-400 underline">Terms of Service &amp; Free Use</button><button type="button" onClick={() => onNavigate("contact")} className="min-h-11 text-orange-400 underline">Contact for support</button></div>
+          </div>
+        </section>
 
         {/* =========================================================
             BLOCK 1 — WHAT CAN YOU USE DAMTARO MUSIC FOR?

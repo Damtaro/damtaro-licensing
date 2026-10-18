@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import Button from "../ui/Button";
 import AudioPlayer from "./AudioPlayer";
+import BusinessStemInfo from "../licensing/BusinessStemInfo";
 
-export default function TrackDetailView({ open, track, onClose, onLicense, suppressEscape = false }) {
+export default function TrackDetailView({ open, track, onClose, onLicense, onRequestCustom = () => {}, suppressEscape = false }) {
   useEffect(() => {
     if (!open || suppressEscape) return undefined;
 
@@ -40,6 +41,8 @@ export default function TrackDetailView({ open, track, onClose, onLicense, suppr
 
             <div className="mt-8"><AudioPlayer track={track} /></div>
             <Button disabled={track.releaseReady === false} onClick={() => onLicense(track)} className="mt-5 w-full disabled:cursor-not-allowed disabled:opacity-50">License this track</Button>
+            <BusinessStemInfo track={track} />
+            {track.customAdaptationRequestsAvailable && <Button variant="secondary" onClick={() => onRequestCustom(track)} className="mt-4 min-h-11 w-full">Request Custom Audio 🎵</Button>}
           </div>
         </div>
       </section>

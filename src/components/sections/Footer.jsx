@@ -3,8 +3,8 @@ import { legalDocuments } from "../../data/legalDocuments";
 
 const navigation = [
   { label: "Home", view: "home" },
-  { label: "Music", view: "music" },
-  { label: "How to Use", view: "how-to-use" },
+  { label: "Browse Music", view: "music" },
+  { label: "Licensing Guide", view: "how-to-use" },
   { label: "Sample Packs", view: "sample-packs" },
   { label: "Contact", view: "contact" },
 ];

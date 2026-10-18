@@ -1,5 +1,6 @@
 import { formatLicensePrice, getDisplayCurrency } from "../../utils/licensePriceDisplay";
 import Button from "../ui/Button";
+import BusinessStemInfo from "./BusinessStemInfo";
 
 export default function LicenseCard({ license, onLicense, selectedCurrency }) {
   return (
@@ -14,6 +15,7 @@ export default function LicenseCard({ license, onLicense, selectedCurrency }) {
         ))}
       </div>
       <p className="mt-5 text-sm leading-6 text-zinc-400">{license.boundary}</p>
+      {license.type === "business" && <BusinessStemInfo />}
       <div className="mt-auto pt-6"><Button onClick={onLicense} className="w-full">Choose License</Button></div>
     </article>
   );

@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap");
 
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "./";
+@source "../qa/fixtures";
 
 @theme {
   --font-sans: "Manrope", Arial, Helvetica, sans-serif;
