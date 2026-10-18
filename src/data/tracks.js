@@ -168,6 +168,11 @@ const tracks = [
 
 // ISO dates sort newest-first; unknown dates retain the legacy order above.
 // Sort a copy so the source catalog is never mutated.
-export default [...tracks].sort((a, b) =>
+export default tracks.map(track => ({
+  // Pending means metadata is not yet confirmed, not that official stems do not exist.
+  officialStems: { verificationStatus: "pending", count: null, labels: [] },
+  customAdaptationRequestsAvailable: true,
+  ...track,
+})).sort((a, b) =>
   (b.releaseDate ?? "").localeCompare(a.releaseDate ?? "")
 );

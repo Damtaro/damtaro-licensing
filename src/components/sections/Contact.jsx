@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import Container from "../ui/Container";
+import { sendContactRequest } from "../../services/contactService";
 
 const fields = [
   { name: "name", label: "Name", type: "text", placeholder: "Your name", autoComplete: "name", maxLength: 120 },
@@ -32,13 +33,7 @@ export default function Contact() {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 20000);
     try {
-      const response = await fetch("https://formspree.io/f/mdekgzng", {
-        method: "POST",
-        body,
-        headers: { Accept: "application/json" },
-        signal: controller.signal,
-      });
-      if (!response.ok) throw new Error("Submission failed");
+      await sendContactRequest(body, controller.signal);
       form.reset();
       setStatus("success");
     } catch {

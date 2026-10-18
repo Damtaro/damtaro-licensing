@@ -1,0 +1,116 @@
+{
+  "baseline": "1c76d45570718c7d65bc24124239794683fca1e0",
+  "contracts": {
+    "src/data/legalDocuments.js": "f02b85be4cd601b3dff6207e7f79338cabc86cc626327163206475df74903f95",
+    "src/data/licenses.js": "2d93a20e6cdd4b8aeb4d0c37470f267c7a4e06917986db69a20c5bea32cce994",
+    "src/data/pricing.js": "8b2866858c95c22c208546837c3df4c058b46dbb92a0429c7438e92a579e95d0",
+    "src/data/currencies.js": "7540ade2e79c976b612ba84afede8e6972f0cec89b21fc6a05cb75ea5228dded",
+    "src/services/orderService.js": "9fc3a2ea60e121615ecf17e22fcb94a0f0dc9f3486612e33bae5e04ac9ca3191",
+    "src/services/payment/paymentOperations.js": "d3e015f0beb1232517954537d0e7c0cb846ac06be886818f71737e224ad2205c",
+    "src/services/payment/paymentProviders.js": "2edde3d200a9e1310f9ec3ca5389344e184b2224351086357be5404d43ff7430",
+    "src/services/payment/paymentProvider.js": "d1e6da828a4d11a65507091a7a6ce5569b3a5231601a23aaa9cebf7c075bb98d",
+    "src/services/payment/paymentService.js": "5d2d0b6b910fca40c4e13539357fd8281a1c07f32c5f60084f24d188fbb48638",
+    "src/pages/Checkout.jsx": "1e0aa2277b53fbd6a4875f699e36c75c869b9315d1eb2ced081010ef3ec3c113"
+  },
+  "tracks": {
+    "TITAN": {
+      "id": 9,
+      "cover": {
+        "path": "src/assets/covers/titan.jpg",
+        "sha256": "2144763ff48a7838bc037cf0a020f18459b0e5e1f43143e8bea3553424706de0"
+      },
+      "preview": {
+        "path": "src/assets/audio/titan.mp3",
+        "sha256": "953dc5be7f1e04a0981e8ab10310658995048ec3c25eab756f1eda98e95545a1"
+      }
+    },
+    "REGAIN": {
+      "id": 8,
+      "cover": {
+        "path": "src/assets/covers/regain.jpg",
+        "sha256": "cf574336b0ebeae401625e3776de953ca0f01c06f5dc8e5be685c5472381b8b7"
+      },
+      "preview": {
+        "path": "src/assets/audio/regain.mp3",
+        "sha256": "5e33cf4410e1e3e3f3914a780403b0ee166f50e64bc680095a4ba65dd5028987"
+      }
+    },
+    "GRAVITY": {
+      "id": 7,
+      "cover": {
+        "path": "src/assets/covers/gravity.jpg",
+        "sha256": "48c1f5253c6055af6aab8e228a5fc090d10e372b0536c60500d571aaab607c02"
+      },
+      "preview": {
+        "path": "src/assets/audio/gravity.mp3",
+        "sha256": "0b388211afa4287b43d92c457d8f02958b7d2ca51931a161a8f7264b7f1b60e6"
+      }
+    },
+    "CRAZY": {
+      "id": 6,
+      "cover": {
+        "path": "src/assets/covers/crazy.jpg",
+        "sha256": "170bc5deae1f05cde11bb896b16445d25fe1399b9b96a32ed83132dcbc2da807"
+      },
+      "preview": {
+        "path": "src/assets/audio/crazy.mp3",
+        "sha256": "24b78b39f72f604e7ce8aa7c6790f640edd9879f1b2d390bbadb4eec7218320a"
+      }
+    },
+    "CTRL ME": {
+      "id": 5,
+      "cover": {
+        "path": "src/assets/covers/CTRL ME.png",
+        "sha256": "9395d40a0dda62611361f89545f3b537bf3578aa18e4d9743ec695e24e010209"
+      },
+      "preview": {
+        "path": "src/assets/audio/Damtaro - CTRL ME.mp3",
+        "sha256": "066e967a8dd6e20236b32696bf9161228a55a8185f9cc6ee17f7a1c29656456e"
+      }
+    },
+    "FEEL AGAIN": {
+      "id": 4,
+      "cover": {
+        "path": "src/assets/covers/feel-again.webp",
+        "sha256": "fc7ded9d7cea5387e62eea82ae17480810896c5be10b5d3cb4a8681261adaa7e"
+      },
+      "preview": {
+        "path": "src/assets/audio/feel-again.mp3",
+        "sha256": "1e25f3a6e21e5f3c87ce6e838b34bec5b32881c82df148603e1d4f5d5d45479c"
+      }
+    },
+    "BLIND": {
+      "id": 1,
+      "cover": {
+        "path": "src/assets/covers/blind.webp",
+        "sha256": "263d3648e4c4f773eb9e50f0a4976b4e4eb436fc7a85c377e6f0e7db917e45a2"
+      },
+      "preview": {
+        "path": "src/assets/audio/blind.mp3",
+        "sha256": "29b9e81d60e2ddea06dec92aafa73f2d4935b04215202118d9b95aa72d0956d3"
+      }
+    },
+    "CONTROL": {
+      "id": 2,
+      "cover": {
+        "path": "src/assets/covers/control.webp",
+        "sha256": "2ab07142725ac914bcc559d69f6a71f6af171fd448846af34d1cf86d2cd382aa"
+      },
+      "preview": {
+        "path": "src/assets/audio/control.mp3",
+        "sha256": "db772fd7dc6eb8075d420b19ec0402a4f8c2cbc823ca154f3312ddae3e7d7112"
+      }
+    },
+    "ELEVATION": {
+      "id": 3,
+      "cover": {
+        "path": "src/assets/covers/elevation.webp",
+        "sha256": "feaea8b1e1c7feafbbb298e605af08cf52f11863c6fa642632e6258f4c92f749"
+      },
+      "preview": {
+        "path": "src/assets/audio/elevation.mp3",
+        "sha256": "b67340465464390ed635d316156d12cd0ef554a035a652c13b69a349c2c51856"
+      }
+    }
+  }
+}

@@ -7,6 +7,8 @@ export default function Button({
   ...props
 }) {
   const variants = {
+    purchase:
+      "bg-orange-500 hover:bg-orange-400 text-black border border-orange-500",
     primary:
       "bg-orange-500 hover:bg-orange-400 text-white border border-orange-500",
 

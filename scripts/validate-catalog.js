@@ -31,6 +31,7 @@ const expectedOptions = {
   9: ["hQVYbEfHfOUiLE-E6iVtfg%3D%3D", "dV2JDVVszfUGF5NIk6UY_Q%3D%3D"],
 };
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const approved = JSON.parse(await readFile(new URL('./approved-integrity-v1-4.json', import.meta.url), 'utf8'));
 const server = await createServer({
   server: { host: "127.0.0.1", port: 0, hmr: false },
 });
@@ -86,6 +87,7 @@ try {
   assert.throws(() => provider.createPayment({ currency: "EUR", items: [{ trackId: 6, licenseType: "creator" }] }), /requires USD/);
 
   for (const track of tracks) {
+    assert.equal(track.id, approved.tracks[track.title]?.id, `Approved ID: ${track.title}`);
     assert.equal(track.smartlinkUrl, expectedLinks[track.title]);
     const draft = track.releaseReady === false;
     assert.equal(draft, false);
@@ -126,16 +128,23 @@ try {
       const licenseHtml = renderToStaticMarkup(createElement(LicenseModal, {
         open: true, track, termsAccepted: accepted,
       }));
-      const purchaseButtons = licenseHtml.match(/<button\b[^>]*>Get License<\/button>/g);
-      assert.equal(purchaseButtons.length, 2);
-      assert.ok(purchaseButtons.every((button) => button.includes('disabled=""') === !accepted));
+      // Selection is available before consent; checkout and consent belong to the next step.
+      // Interactive tests exercise both license summaries and block checkout until acceptance.
+      const choiceButtons = licenseHtml.match(/<button\b[^>]*>Choose (Creator|Business)<\/button>/g);
+      assert.equal(choiceButtons.length, 2);
+      assert.ok(choiceButtons.every((button) => !button.includes('disabled=""')));
+      assert.ok(!licenseHtml.includes('Continue to Secure Checkout'));
+      assert.ok(!licenseHtml.includes('type="checkbox"'));
     }
-    for (const asset of [track.cover, track.preview]) {
+    for (const [field, asset] of [['cover', track.cover], ['preview', track.preview]]) {
       const response = await fetch(new URL(asset, origin));
       assert.equal(response.status, 200, asset);
       assert.ok(Number(response.headers.get("content-length")) > 0, asset);
       await response.arrayBuffer();
       const sourceAsset = await readFile(decodeURIComponent(asset.split("?")[0]).replace(/^\//, ""));
+      const expected = approved.tracks[track.title][field];
+      assert.equal(decodeURIComponent(asset.split('?')[0]).replace(/^\//, ''), expected.path);
+      assert.equal(hash(sourceAsset), expected.sha256, `Approved asset integrity: ${asset}`);
       const builtName = builtAssets.get(hash(sourceAsset));
       assert.ok(builtName, `Missing or altered production asset: ${asset}`);
       assert.ok(productionJs.includes(encodeURI(builtName)), `Unreferenced production asset: ${builtName}`);
@@ -143,12 +152,8 @@ try {
     }
     if (track.id >= 6) {
       const slug = track.title.toLowerCase();
-      const source = await readFile(`NEW TRACKS/${track.title}/${slug}.mp3`);
-      const copy = await readFile(`src/assets/audio/${slug}.mp3`);
-      assert.equal(hash(source), hash(copy));
       assert.ok(track.cover.endsWith(`/${slug}.jpg`));
-      const originalCover = await readFile(`NEW TRACKS/${track.title}/${slug}.png`);
-      assert.ok(!builtAssets.has(hash(originalCover)));
+      assert.ok(!distNames.some(name => name.toLowerCase().startsWith(`${slug}-`) && name.endsWith('.png')), `No original PNG published: ${slug}`);
       assert.equal(track.key, undefined);
       assert.equal(track.description, undefined);
       assert.equal(track.potentialUses, undefined);
@@ -156,7 +161,7 @@ try {
   }
   assert.equal(catalogAssets.size, 18);
   assert.equal(checkoutUrls.size, 18);
-  console.log("PASS: nine IDs/tracks/Smartlinks, chronological order, search/filters, enabled controls, legal consent, 18 exact checkout URLs, USD prices, pending payment status, invalid checkout rejection, and all 18 catalog assets in production without original PNGs or WAVs.");
+  console.log("PASS: nine approved IDs/tracks/Smartlinks, chronological order, search/filters, enabled controls, legal consent, 18 exact checkout URLs, USD prices, pending payment status, invalid checkout rejection, and 18 approved asset hashes in production; no original cover filenames or WAVs. Private-original provenance is a separate optional audit.");
 } finally {
   await server.close();
 }

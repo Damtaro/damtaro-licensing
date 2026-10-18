@@ -9,6 +9,9 @@ lerna-debug.log*
 
 # Dependencies
 node_modules
+/test-results/
+/playwright-report/
+/.qa-clean-checkout/
 
 # Build output
 dist

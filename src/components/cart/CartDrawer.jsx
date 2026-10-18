@@ -17,20 +17,21 @@ export default function CartDrawer({
 
   useEffect(() => {
     if (open) {
-      setIsMounted(true);
-
+      let revealFrame;
       const frame = window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
+        setIsMounted(true);
+        revealFrame = window.requestAnimationFrame(() => {
           setIsVisible(true);
         });
       });
 
       return () => {
         window.cancelAnimationFrame(frame);
+        window.cancelAnimationFrame(revealFrame);
       };
     }
 
-    setIsVisible(false);
+    const hideFrame = window.requestAnimationFrame(() => setIsVisible(false));
 
     const timeout = window.setTimeout(() => {
       setIsMounted(false);
@@ -38,6 +39,7 @@ export default function CartDrawer({
 
     return () => {
       window.clearTimeout(timeout);
+      window.cancelAnimationFrame(hideFrame);
     };
   }, [open]);
 
