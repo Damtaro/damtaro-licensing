@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import process from 'node:process';
+
+const screenshotPath = name => join(process.env.PLAYWRIGHT_SCREENSHOT_DIR || 'artifacts/v1-4', name);
 
 test.beforeEach(async ({ page }) => {
   await page.route('https://formspree.io/**', route => route.abort());
@@ -18,7 +21,7 @@ test('home metadata, one H1 and commercial navigation use existing views', async
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', await page.title());
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.locator('h1')).toHaveText('Music for Your Next Project.');
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-conversion-home.png`, fullPage: true });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-conversion-home.png`), fullPage: true });
   await page.getByRole('button', { name: 'How Licensing Works', exact: true }).click();
   await expect(page.getByRole('region', { name: 'Choose your licensing path' })).toContainText('Content ID claim?');
   await expect(page.locator('h1')).toHaveCount(1);
@@ -28,12 +31,13 @@ test('home metadata, one H1 and commercial navigation use existing views', async
   await page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('button', { name: 'Home', exact: true }).click();
   await page.getByRole('button', { name: 'Explore Music', exact: true }).click();
   await expect(page.locator('.music-card')).toHaveCount(9);
+  await expect(page.locator('.music-card').getByRole('button', { name: 'License · $17 USD', exact: true })).toHaveCount(9);
 });
 
 test('compact selector, keyboard focus, changing license and fresh consent', async ({ page }, info) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Explore Music', exact: true }).click();
-  const trigger = page.locator('.music-card').first().getByRole('button', { name: 'License', exact: true });
+  const trigger = page.locator('.music-card').first().getByRole('button', { name: 'License · $17 USD', exact: true });
   await trigger.click();
   const modal = page.getByRole('dialog', { name: 'Licensing options' });
   await expect(modal.getByRole('heading', { name: 'License TITAN', exact: true })).toBeVisible();
@@ -52,9 +56,9 @@ test('compact selector, keyboard focus, changing license and fresh consent', asy
     const boxes = await Promise.all(buttons.map(button => button.boundingBox()));
     expect(Math.abs(boxes[0].y - boxes[1].y)).toBeLessThan(2);
   }
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-license-selector.png` });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-license-selector.png`) });
   await modal.getByRole('button', { name: 'Choose Business', exact: true }).scrollIntoViewIfNeeded();
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-license-selector-cta.png` });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-license-selector-cta.png`) });
   await modal.getByRole('button', { name: 'Choose Creator', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(modal.getByRole('heading', { name: 'Creator License summary' })).toBeFocused();
@@ -68,9 +72,9 @@ test('compact selector, keyboard focus, changing license and fresh consent', asy
   await expect(modal).toContainText('One commercial project or campaign.');
   await expect(modal.getByRole('checkbox')).not.toBeChecked();
   await expect(checkout).toBeDisabled();
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-business-summary.png` });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-business-summary.png`) });
   await checkout.scrollIntoViewIfNeeded();
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-business-summary-cta.png` });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-business-summary-cta.png`) });
   const last = modal.getByRole('button', { name: 'Request Custom Audio 🎵', exact: true });
   await last.focus();
   await page.keyboard.press('Tab');
