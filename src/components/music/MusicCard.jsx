@@ -1,5 +1,6 @@
 import AudioPlayer from "./AudioPlayer";
 import Button from "../ui/Button";
+import { CREATOR_LICENSE_PRICE } from "../../data/licenses";
 
 function isValidSmartlinkUrl(value) {
   if (typeof value !== "string" || !value.trim()) return false;
@@ -47,7 +48,7 @@ export default function MusicCard({ track, onLicense, onViewTrack, onDownload, e
         } />
       </div>
       <div className="px-4 pb-4 pt-2">
-        <Button disabled={track.releaseReady === false} onClick={() => onLicense(track)} className="min-h-11! w-full gap-3! py-2! shadow-sm shadow-orange-500/10 transition-colors! disabled:cursor-not-allowed disabled:opacity-50">License <span aria-hidden="true">&rarr;</span></Button>
+        <Button disabled={track.releaseReady === false} onClick={() => onLicense(track)} className="min-h-11! w-full gap-3! py-2! shadow-sm shadow-orange-500/10 transition-colors! disabled:cursor-not-allowed disabled:opacity-50">{`License · $${CREATOR_LICENSE_PRICE} USD`} <span aria-hidden="true">&rarr;</span></Button>
       </div>
     </article>
   );

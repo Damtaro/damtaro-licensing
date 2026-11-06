@@ -1,4 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { join } from 'node:path';
+import process from 'node:process';
+
+const screenshotPath = name => join(process.env.PLAYWRIGHT_SCREENSHOT_DIR || 'artifacts/v1-4', name);
 
 async function catalog(page) {
   await page.goto('/');
@@ -73,9 +77,9 @@ test('neutral stem metadata and responsive custom form retain song context', asy
   await expect(detail.getByText('Includes the official stems supplied by DAMTARO for the selected track.')).toBeVisible();
   await expect(detail.getByRole('list')).toHaveCount(0);
   await expect(detail.getByText(/unavailable|not verified|four stems/i)).toHaveCount(0);
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-track-detail.png`, fullPage: false });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-track-detail.png`), fullPage: false });
   await detail.evaluate(element => { element.scrollTop = element.scrollHeight; });
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-stem-options.png`, fullPage: false });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-stem-options.png`), fullPage: false });
   await detail.getByRole('button', { name: 'Request Custom Audio 🎵' }).click();
   const form = page.getByRole('form', { name: 'Custom Audio Request' });
   await expect(form.locator('[name=asset]')).toHaveValue('9');
@@ -84,7 +88,7 @@ test('neutral stem metadata and responsive custom form retain song context', asy
   await expect(page.getByRole('heading', { name: 'Privacy Policy', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Back to custom request' }).first().click();
   await expect(form.locator('[name=description]')).toHaveValue('Draft retained while reading privacy.');
-  await page.screenshot({ path: `artifacts/v1-4/${info.project.name}-custom-request.png`, fullPage: true });
+  await page.screenshot({ path: screenshotPath(`${info.project.name}-custom-request.png`), fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Back to TITAN', exact: true }).click();
   await expect(page.getByRole('dialog', { name: 'TITAN', exact: true })).toBeVisible();
@@ -95,7 +99,7 @@ for (const [index, type, product, price] of [[0, 'Creator', 'cxmwf', '17'], [1, 
     let url;
     await page.route('https://damtarooff.gumroad.com/**', route => { url = route.request().url(); return route.fulfill({ contentType: 'text/html', body: '<h1>Mock checkout only</h1>' }); });
     await catalog(page);
-    await page.locator('.music-card').first().getByRole('button', { name: 'License', exact: true }).click();
+    await page.locator('.music-card').first().getByRole('button', { name: 'License · $17 USD', exact: true }).click();
     const modal = page.getByRole('dialog', { name: 'Licensing options' });
     await expect(modal.locator('article').nth(index)).toContainText(`$${price}`);
     await expect(modal.getByRole('checkbox')).toHaveCount(0);
