@@ -127,19 +127,7 @@ export default function Navbar({
                 }`}
               >Licensing Guide</button>
 
-              <button
-                type="button"
-                onClick={() =>
-                  handleNavigation("sample-packs")
-                }
-                className={`transition-colors duration-200 ${
-                  activeView === "sample-packs"
-                    ? "text-orange-400"
-                    : "text-white hover:text-orange-400"
-                }`}
-              >
-                Sample Packs
-              </button>
+              <a href="/academy" className="text-white transition-colors duration-200 hover:text-orange-400">Cursos</a>
 
               <button
                 type="button"
@@ -320,8 +308,8 @@ export default function Navbar({
               <button type="button" onClick={() => setIsMenuOpen(false)} aria-label="Close navigation menu" className="h-11 w-11 shrink-0 rounded-xl border border-white/20 text-2xl">&times;</button>
             </div>
             <nav aria-label="Mobile navigation" className="grid gap-2">
-              {[["home", "Home"], ["music", "Browse Music"], ["how-to-use", "Licensing Guide"], ["sample-packs", "Sample Packs"], ["contact", "Contact"]].map(([view, label]) => (
-                <button key={view} type="button" onClick={() => handleNavigation(view)} aria-current={activeView === view ? "page" : undefined} className={"min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5 " + (activeView === view ? "bg-orange-500/10 text-orange-400" : "text-white")}>{label}</button>
+              {[["home", "Home"], ["music", "Browse Music"], ["how-to-use", "Licensing Guide"], ["courses", "Cursos"], ["contact", "Contact"]].map(([view, label]) => (
+                <button key={view} type="button" onClick={() => view === "courses" ? window.location.assign("/academy") : handleNavigation(view)} aria-current={activeView === view ? "page" : undefined} className={"min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5 " + (activeView === view ? "bg-orange-500/10 text-orange-400" : "text-white")}>{label}</button>
               ))}
               <button type="button" onClick={() => { setIsMenuOpen(false); onOpenCart(); }} className="min-h-12 rounded-xl px-4 py-3 text-left font-bold hover:bg-white/5">Licensing cart ({cartItemCount})</button>
             </nav>
