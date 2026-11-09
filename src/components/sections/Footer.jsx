@@ -5,7 +5,6 @@ const navigation = [
   { label: "Home", view: "home" },
   { label: "Browse Music", view: "music" },
   { label: "Licensing Guide", view: "how-to-use" },
-  { label: "Sample Packs", view: "sample-packs" },
   { label: "Contact", view: "contact" },
 ];
 
@@ -84,6 +83,7 @@ export default function Footer({ onNavigate }) {
                 {label}
               </button>
             ))}
+            <a href="/academy" className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-zinc-300 hover:text-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400">Cursos</a>
           </nav>
         </div>
 

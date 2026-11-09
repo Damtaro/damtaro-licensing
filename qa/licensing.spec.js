@@ -35,7 +35,7 @@ test('existing navigation, mobile menu, contact and legal views stay available',
   } else await page.locator('header nav').getByRole('button', { name: 'Browse Music', exact: true }).click();
   await expect(page.locator('.music-card')).toHaveCount(9);
   const footer = page.getByRole('navigation', { name: 'Footer navigation' });
-  for (const [label, selector] of [['Licensing Guide', '#how-to-use-title'], ['Sample Packs', '#sample-packs-title'], ['Contact', '#contact-title']]) {
+  for (const [label, selector] of [['Licensing Guide', '#how-to-use-title'], ['Contact', '#contact-title']]) {
     await footer.getByRole('button', { name: label, exact: true }).click();
     await expect(page.locator(selector)).toBeVisible();
   }
